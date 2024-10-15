@@ -43,7 +43,10 @@ class LargeVIewModel(application: Application) : AndroidViewModel(application) {
     private val cacheDaoUtil = repository.getCacheDaoUtil()
     fun cache(pos: Int){
         viewModelScope.launch {
-            cacheDaoUtil.insertItemList(Cache(null,photoListLiveData.value!![pos]))
+            photoListLiveData.value!![pos].apply {
+                cacheDaoUtil.insertItemList(Cache(this.id,photoListLiveData.value!![pos],System.currentTimeMillis()))
+            }
+
         }
     }
 

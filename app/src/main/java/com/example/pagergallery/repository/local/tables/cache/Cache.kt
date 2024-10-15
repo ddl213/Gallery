@@ -16,12 +16,11 @@ import com.google.gson.reflect.TypeToken
 
 @Entity(tableName = TABLE_CACHE)
 data class Cache(
-    @PrimaryKey(autoGenerate = true) val id : Int?,
-    @ColumnInfo("item")  val item : Item
-)
-//,
-//@field:SerializedName("type") val type : String
+    @PrimaryKey val id : Long,
+    @ColumnInfo("item")  val item : Item,
+    @ColumnInfo("time")  val time : Long
 
+)
 class ItemConverter{
     @TypeConverter
     fun fromString(value : String) : Item{
