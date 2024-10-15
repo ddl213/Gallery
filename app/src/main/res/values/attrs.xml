@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <declare-styleable name="ExpandableFlowLayout">
+        <attr name="element_divider_horizontal" format="dimension"/>
+        <attr name="element_divider_vertical" format="dimension"/>
+
+    </declare-styleable>
+    <declare-styleable name="EditTextWithClear">
+        <attr name="clearIcon" format="reference"/>
+    </declare-styleable>
+</resources>

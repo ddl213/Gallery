@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/baseFragment">
+    <fragment
+        android:id="@+id/galleryFragment"
+        android:name="com.example.pagergallery.fragment.home.GalleryFragment"
+        android:label="Gallery"
+        tools:layout="@layout/fragment_gallery"/>
+    <fragment
+        android:id="@+id/largeViewFragment"
+        android:name="com.example.pagergallery.fragment.large.LargeViewFragment"
+        android:label="Gallery"
+        tools:layout="@layout/fragment_large_view"/>
+    <fragment
+        android:id="@+id/baseFragment"
+        android:name="com.example.pagergallery.fragment.home.BaseFragment"
+        android:label="@string/bnv_base"
+        tools:layout="@layout/fragment_base">
+        <action
+            android:id="@+id/action_baseFragment_to_galleryFragment"
+            app:destination="@id/galleryFragment" />
+        <action
+            android:id="@+id/action_baseFragment_to_queryFragment"
+            app:destination="@id/queryFragment" />
+        <action
+            android:id="@+id/action_baseFragment_to_largeViewFragment"
+            app:destination="@id/largeViewFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/queryFragment"
+        android:name="com.example.pagergallery.fragment.home.query.QueryFragment"
+        android:label="fragment_query"
+        tools:layout="@layout/fragment_query" >
+        <action
+            android:id="@+id/action_queryFragment_to_showQueryFragment"
+            app:destination="@id/showQueryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/showQueryFragment"
+        android:name="com.example.pagergallery.fragment.home.query.ShowQueryFragment"
+        android:label="fragment_show_query"
+        tools:layout="@layout/fragment_show_query" >
+        <action
+            android:id="@+id/action_showQueryFragment_to_largeViewFragment"
+            app:destination="@id/largeViewFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/collectionFragment"
+        android:name="com.example.pagergallery.fragment.favorite.CollectionFragment"
+        android:label="@string/text_collection"
+        tools:layout="@layout/fragment_collection">
+        <action
+            android:id="@+id/action_collectionFragment_to_largeViewFragment"
+            app:destination="@id/largeViewFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mineFragment"
+        android:name="com.example.pagergallery.fragment.mine.MineFragment"
+        android:label="@string/bnv_mine"
+        tools:layout="@layout/fragment_mine" >
+        <action
+            android:id="@+id/action_mineFragment_to_collectionFragment"
+            app:destination="@id/collectionFragment" />
+        <action
+            android:id="@+id/action_mineFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_mineFragment_to_infoFragment"
+            app:destination="@id/infoFragment" />
+        <action
+            android:id="@+id/action_mineFragment_to_settingFragment"
+            app:destination="@id/settingFragment" />
+        <action
+            android:id="@+id/action_mineFragment_to_downLoadFragment"
+            app:destination="@id/downLoadFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.pagergallery.fragment.mine.login.LoginFragment"
+        android:label="LoginFragment" >
+        <action
+            android:id="@+id/action_loginFragment_to_mineFragment"
+            app:destination="@id/mineFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_registerFragment"
+            app:destination="@id/registerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.example.pagergallery.fragment.mine.login.RegisterFragment"
+        android:label="RegisterFragment" >
+        <action
+            android:id="@+id/action_registerFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/infoFragment"
+        android:name="com.example.pagergallery.fragment.mine.info.InfoFragment"
+        android:label="InfoFragment" >
+        <action
+            android:id="@+id/action_infoFragment_to_resetInfoFragment"
+            app:destination="@id/resetInfoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/resetInfoFragment"
+        android:name="com.example.pagergallery.fragment.mine.info.ResetInfoFragment"
+        android:label="ResetInfoFragment" />
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.example.pagergallery.fragment.mine.setting.SettingFragment"
+        android:label="SettingFragment" />
+    <fragment
+        android:id="@+id/downLoadFragment"
+        android:name="com.example.pagergallery.fragment.mine.download.DownLoadFragment"
+        android:label="fragment_down_load"
+        tools:layout="@layout/fragment_down_load" >
+        <action
+            android:id="@+id/action_downLoadFragment_to_largeViewFragment"
+            app:destination="@id/largeViewFragment" />
+    </fragment>
+</navigation>

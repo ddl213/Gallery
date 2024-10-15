@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.PagerGallery" parent="Theme.AppCompat.Light.NoActionBar" >
+
+        <item name="android:statusBarColor">
+            @android:color/transparent
+        </item>
+
+        <!-- Optional: set for a light status bar with dark content. -->
+        <item name="android:windowLightStatusBar">
+            true
+        </item>
+    </style>
+
+    <style name="bottomNavigateViewTheme" parent="Theme.MaterialComponents.Light">
+        <item name="colorPrimary">@color/blue_007</item>
+        <item name="android:textColorSecondary">@color/black1</item>
+    </style>
+</resources>
