@@ -304,9 +304,6 @@ class LargeViewFragment :
         }
     }
 
-
-
-
     private fun translationDown() {
         val view1 = binding.layoutActionBar.layoutActionBar
         val items = mutableListOf<Animator>()
