@@ -19,9 +19,5 @@ class BaseViewModel(context: Context) : ViewModel() {
 
     val topBar = repository.color
 
-    //刷新
-    fun setReFresh(state : Boolean){
-        repository.setReFresh(state)
-    }
 
 }

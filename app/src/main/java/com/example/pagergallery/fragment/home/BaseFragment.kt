@@ -25,10 +25,6 @@ class BaseFragment : BaseBindFragment<FragmentBaseBinding>(FragmentBaseBinding::
     private val viewModel by activityViewModels<GalleryViewModel>()
 
     override fun initView() {
-        viewModel.setTopAppBarVisible(requireActivity(),false,
-            canBack = false,
-            color = R.color.teal_700
-        )
 
         binding.layoutTab.root.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.teal_700))
         binding.layoutTab.tabType.setSelectedTabIndicatorColor(ContextCompat.getColor(requireContext(),R.color.white))

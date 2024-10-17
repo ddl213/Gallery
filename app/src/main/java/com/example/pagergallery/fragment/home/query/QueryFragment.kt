@@ -28,7 +28,6 @@ class QueryFragment : BaseBindFragment<FragmentQueryBinding>(FragmentQueryBindin
     private var isDelete = false
 
     override fun initView() {
-        viewModel.setTopAppBarVisible(requireActivity(),false, canBack = true, color = null)
         binding.apply {
             expandView.setOnClickListener(object : ExpandableFlowLayout.OnClickListener {
                 override fun click(index: Int, content: String) {

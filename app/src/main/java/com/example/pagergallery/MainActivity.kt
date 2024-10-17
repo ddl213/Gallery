@@ -2,16 +2,13 @@ package com.example.pagergallery
 
 import android.graphics.Color
 import android.os.Build
-import com.example.pagergallery.unit.view.BottomNavigationCompose
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
@@ -21,7 +18,7 @@ import com.example.pagergallery.unit.base.MyViewModelFactory
 import com.example.pagergallery.unit.logD
 import com.example.pagergallery.unit.view.AppBarCompose
 import com.example.pagergallery.unit.view.BottomItem
-import kotlinx.coroutines.delay
+import com.example.pagergallery.unit.view.BottomNavigationCompose
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedListener {
@@ -54,11 +51,11 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             BottomNavigationCompose(visible.value) {
                 when (it) {
                     R.id.mineFragment, R.id.collectionFragment -> {
-                        bnvNavigate(it,false)
+                        bnvNavigate(it)
                     }
 
                     R.id.baseFragment -> {
-                        bnvNavigate(it,true)
+                        bnvNavigate(it)
                     }
                 }
             }
@@ -126,19 +123,11 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         }
     }
 
-    private fun bnvNavigate(itemId: Int,reFresh : Boolean): Boolean {
+    private fun bnvNavigate(itemId: Int): Boolean {
         if (navController.currentDestination?.id != itemId) {
             navController.popBackStack()
             navController.navigate(itemId)
             return false
-        } else if(reFresh){
-            viewModel.setReFresh(reFresh)
-            lifecycleScope.launch {
-                repeatOnLifecycle(Lifecycle.State.RESUMED){
-                    delay(500)
-                    viewModel.setReFresh(false)
-                }
-            }
         }
         return true
     }
@@ -162,7 +151,6 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             R.id.queryFragment,R.id.showQueryFragment ,
             R.id.largeViewFragment->{
                 setTopAppBarVisible(false, canBack = false, color = null)
-                //setStatusBarColor(null)
                 setVisible(View.GONE)
             }
             else -> {

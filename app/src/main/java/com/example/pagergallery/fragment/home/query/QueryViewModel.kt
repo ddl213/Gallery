@@ -16,10 +16,6 @@ class QueryViewModel(application: Application) : AndroidViewModel(application) {
 
     private val listDelete = ArrayList<HistoryQuery>()
 
-    fun setTopAppBarVisible(activity: FragmentActivity, visible : Boolean, canBack : Boolean, color : Int?, title: String = ""){
-        repository.setTopAppBarVisible(activity, visible, canBack, color, title)
-    }
-
     //记录查询字段
     fun setQuery(str: String) {
         repository.setQuery(str)

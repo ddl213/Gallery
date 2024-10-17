@@ -18,13 +18,12 @@ import com.example.pagergallery.unit.base.adapterOf
 import com.example.pagergallery.unit.enmu.FragmentFromEnum
 import com.example.pagergallery.unit.launchAndRepeatLifecycle
 import com.example.pagergallery.unit.loadImage
-import com.example.pagergallery.unit.logD
 
 class CollectionFragment : BaseBindFragment<FragmentCollectionBinding>(FragmentCollectionBinding::inflate) {
     private val viewModel by viewModels<CollectViewModel>()
 
     override fun initView() {
-        viewModel.setTopAppBarVisible(requireActivity(),true, canBack = false, color = null,"收藏")
+        viewModel.setTitle("收藏")
         binding.collectRecyclerView.layoutManager = GridLayoutManager(requireContext(),4)
     }
 

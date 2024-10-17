@@ -10,7 +10,6 @@ abstract class BaseAdapter<T, VB : ViewBinding>(
     viewBindingClass: Class<VB>
 ) : RecyclerView.Adapter<BaseViewHolder<VB>>() {
     private val inflateMethod = viewBindingClass.getInflateMethod()
-
     abstract val initViewHolder : (BaseViewHolder<VB>) -> Unit
 
     @Suppress("UNCHECKED_CAST")

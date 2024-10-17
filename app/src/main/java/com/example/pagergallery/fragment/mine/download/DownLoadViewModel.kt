@@ -45,6 +45,12 @@ class DownLoadViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
+    fun clear(){
+        viewModelScope.launch {
+            cacheDaoUtil.deleteAll()
+        }
+    }
+
     //获取下载图片
     private val _downLoadViewList = MutableStateFlow<List<String>>(listOf())
     val downLoadViewList: StateFlow<List<String>> get() = _downLoadViewList

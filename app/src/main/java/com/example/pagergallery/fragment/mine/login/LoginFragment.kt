@@ -71,6 +71,7 @@ class LoginFragment : Fragment() {
             }
 
             else -> {
+                requireContext().shortToast("该功能未完善，敬请期待！").show()
                 viewModel.thirdPartLogin(navigateTo)
             }
         }

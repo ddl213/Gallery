@@ -10,10 +10,6 @@ import kotlin.random.Random
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = Repository.getInstance(getApplication())
     private val userDaoUtil = repository.getUserDaoUtil()
-
-    fun setTopAppBarVisible(activity: FragmentActivity, visible : Boolean, canBack : Boolean, color : Int?, title: String = ""){
-        repository.setTopAppBarVisible(activity, visible, canBack, color, title)
-    }
     fun setTitle(title: String){
         repository.setTitle(title)
     }

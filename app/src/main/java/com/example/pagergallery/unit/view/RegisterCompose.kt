@@ -255,36 +255,5 @@ fun RegisterCompose(
             }
         )
     }
-    /*
-    *
-    * OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    value = confirmPwd,
-                    onValueChange = { confirmPwd = filterMaxLength(it, confirmPwd, 16) },
-                    placeholder = { Text(text = "再次确认密码") },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Lock,
-                            contentDescription = null
-                        )
-                    },
-                    colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Transparent),
-                    trailingIcon = {
-                        IconButton(onClick = { showPwd = !showPwd }) {
-                            Icon(
-                                painter = painterResource(
-                                    id = if (showPwd) R.drawable.ic_pwd_hide else R.drawable.ic_pwd_show
-                                ),
-                                contentDescription = null
-                            )
-                        }
-                    },
-                    visualTransformation = if (!showPwd) PasswordVisualTransformation() else VisualTransformation.None,
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Done
-                    )
-                )
-    * */
+
 }

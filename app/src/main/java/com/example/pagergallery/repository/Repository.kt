@@ -267,18 +267,6 @@ class Repository private constructor(context: Context) {
 
         setStatusBarColor(activity, color)
         _title.value = title
-//        logD("topbar3aaa:${this.color}")
-//        this._color.value.apply {
-//            logD("topbar2aaa:$this")
-//            this.color = color
-//            this.visible = visible
-//            this.canBack = canBack
-//            _color.value = this
-//            logD("topbar2aaa:${_color.value}")
-//            logD("topbar2aaa:${this@Repository.color.value}")
-//        }
-//        logD("topbar3aaa:${this.color.value}")
-//        logD("topbar3aaa:${this.color}")
     }
 
     private fun setStatusBarColor(activity: FragmentActivity, color: Int?) {

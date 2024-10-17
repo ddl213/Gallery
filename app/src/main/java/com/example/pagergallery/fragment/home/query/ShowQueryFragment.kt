@@ -25,8 +25,7 @@ class ShowQueryFragment : BaseBindFragment<FragmentShowQueryBinding>(FragmentSho
     private var currentTab = 0
 
     override fun initView() {
-        currentTab= viewModel.currentTab.value
-        viewModel.setTopAppBarVisible(requireActivity(),false, canBack = true, color = null)
+        currentTab = viewModel.currentTab.value
         binding.layoutBase.viewpager2.adapter = object : FragmentStateAdapter(this) {
             override fun getItemCount(): Int = 4
             override fun createFragment(position: Int): Fragment {

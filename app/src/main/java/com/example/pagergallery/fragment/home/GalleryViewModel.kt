@@ -20,16 +20,6 @@ class GalleryViewModel(application: Application) : AndroidViewModel(application)
     val reFresh = repository.reFresh
 
 
-    fun setTopAppBarVisible(
-        activity: FragmentActivity,
-        visible: Boolean,
-        canBack: Boolean,
-        color: Int?,
-        title: String = ""
-    ) {
-        repository.setTopAppBarVisible(activity, visible, canBack, color, title)
-    }
-
     //获取图片
     fun getData() = repository.getPagingData().cachedIn(viewModelScope)
 
