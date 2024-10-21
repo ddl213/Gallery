@@ -19,8 +19,9 @@ class CollectViewModel(application: Application) : AndroidViewModel(application)
     val collectListLive : StateFlow<List<Item>> get() = _collectList
 
     fun getCollect(){
+        val uid = repository.user.value?.id ?: return
         viewModelScope.launch {
-            collectDaoUtil.getAllCollection()
+            collectDaoUtil.getAllCollection(uid)
                 .flowOn(Dispatchers.IO)
                 .collect { list ->
                     list.map {item ->

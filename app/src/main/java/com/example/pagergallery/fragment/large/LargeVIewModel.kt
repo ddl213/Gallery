@@ -1,7 +1,6 @@
 package com.example.pagergallery.fragment.large
 
 import android.app.Application
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AndroidViewModel
@@ -11,7 +10,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.pagergallery.repository.Repository
 import com.example.pagergallery.repository.api.Item
 import com.example.pagergallery.repository.local.tables.cache.Cache
-import com.example.pagergallery.repository.local.tables.cache.CacheDaoUtil
 import com.example.pagergallery.repository.local.tables.collection.Collection
 import com.example.pagergallery.repository.local.tables.collection.CollectionDaoUtil
 import com.example.pagergallery.unit.isNetWorkAvailable
@@ -42,9 +40,10 @@ class LargeVIewModel(application: Application) : AndroidViewModel(application) {
 
     private val cacheDaoUtil = repository.getCacheDaoUtil()
     fun cache(pos: Int){
+        val uid = repository.user.value?.id ?: return
         viewModelScope.launch {
             photoListLiveData.value!![pos].apply {
-                cacheDaoUtil.insertItemList(Cache(this.id,photoListLiveData.value!![pos],System.currentTimeMillis()))
+                cacheDaoUtil.insertItemList(Cache(this.id,photoListLiveData.value!![pos],System.currentTimeMillis(),uid))
             }
 
         }
@@ -120,13 +119,18 @@ class LargeVIewModel(application: Application) : AndroidViewModel(application) {
 
     //点击收藏或移除收藏
     fun collectState(pos: Int) {
+        val uid = repository.user.value?.id
+        if (uid == null){
+            getApplication<Application>().shortToast("请登录之后再使用该功能").show()
+            return
+        }
         viewModelScope.launch {
             _photoListLiveData.value?.get(pos)?.apply item@{
                 isCollected(this@item.id).apply state@{
                     if (this@state) {
                         removeColl(this@item.id)
                     } else {
-                        addColl(this@item)
+                        addColl(this@item,uid)
                         logD("addColl")
                     }
                     _collectState.value = !this
@@ -141,8 +145,8 @@ class LargeVIewModel(application: Application) : AndroidViewModel(application) {
     private suspend fun removeColl(id: Long) { collectionDaoUtil.deleteCollById(id) }
 
     //添加收藏
-    private suspend fun addColl(item: Item) {
-        collectionDaoUtil.insertCollections(Collection(item.id, Gson().toJson(item)))
+    private suspend fun addColl(item: Item,uid : Int){
+        collectionDaoUtil.insertCollections(Collection(item.id, Gson().toJson(item),System.currentTimeMillis(),uid))
     }
 
     //获取图片类型

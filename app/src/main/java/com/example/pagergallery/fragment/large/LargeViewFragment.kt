@@ -8,11 +8,9 @@ import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
 import android.view.WindowManager
-import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
@@ -27,7 +25,6 @@ import com.example.pagergallery.unit.base.BaseBindFragment
 import com.example.pagergallery.unit.base.BaseViewHolder
 import com.example.pagergallery.unit.base.adapterOf
 import com.example.pagergallery.unit.enmu.FragmentFromEnum
-import com.example.pagergallery.unit.enmu.ImageTypeEnum
 import com.example.pagergallery.unit.launchAndRepeatLifecycle
 import com.example.pagergallery.unit.loadImage
 import com.example.pagergallery.unit.logD

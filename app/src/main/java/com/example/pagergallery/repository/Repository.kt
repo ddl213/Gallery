@@ -4,11 +4,9 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Build
 import androidx.compose.runtime.mutableStateOf
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.map
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData

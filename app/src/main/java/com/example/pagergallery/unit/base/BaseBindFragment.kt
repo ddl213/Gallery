@@ -1,6 +1,5 @@
 package com.example.pagergallery.unit.base
 
-import android.app.Application
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -42,27 +41,6 @@ abstract class BaseBindFragment<V : ViewBinding>(private val inflate: (LayoutInf
     abstract fun initView()
     abstract fun initData()
     abstract fun initEvent()
-
-    //设置标题栏可见性
-    fun setTopAppBarVisible(visible : Boolean, canBack : Boolean, color : Int?, title: String = ""){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            requireActivity().window.setDecorFitsSystemWindows(!visible)
-        }else{
-            WindowCompat.setDecorFitsSystemWindows(requireActivity().window,!visible)
-        }
-
-        requireActivity().window.statusBarColor = if (color != null) resources.getColor(
-            color,
-            null
-        ) else Color.TRANSPARENT
-
-        //viewModel.setTopAppBarVisible(visible)
-        //viewModel.canBack.value = canBack
-    }
-
-    //设置标题栏文字
-    fun setTopAppBarTitle(title : String){
-    }
 
     //将binding置为空,防止内存消耗
     override fun onDestroyView() {

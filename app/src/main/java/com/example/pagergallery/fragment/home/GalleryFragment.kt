@@ -28,7 +28,6 @@ class GalleryFragment(private val isQuery: Boolean, private val type: String) :
     //用户搜索图片的字段
     private var isResetAdapter = false
     private var count = 0
-
     private val viewModel by activityViewModels<GalleryViewModel>()
     private val mAdapter by lazy {
         GalleryAdapter {
@@ -70,6 +69,7 @@ class GalleryFragment(private val isQuery: Boolean, private val type: String) :
                             viewModel.galleryListLiveData.value?.get(type) ?: listOf()
                         )
                     )
+
                     logD("submitData:${viewModel.galleryListLiveData.value?.get(type)?.size}${viewModel.getImageTypeStr.value}:$type")
                 }
 

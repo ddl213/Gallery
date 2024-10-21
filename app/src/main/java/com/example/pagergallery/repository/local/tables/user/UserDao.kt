@@ -7,7 +7,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.pagergallery.unit.TABLE_USER
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {

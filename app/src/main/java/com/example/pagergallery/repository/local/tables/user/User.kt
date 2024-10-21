@@ -1,6 +1,5 @@
 package com.example.pagergallery.repository.local.tables.user
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey

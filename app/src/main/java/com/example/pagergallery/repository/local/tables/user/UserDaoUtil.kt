@@ -2,9 +2,6 @@ package com.example.pagergallery.repository.local.tables.user
 
 import android.database.sqlite.SQLiteConstraintException
 import com.example.pagergallery.unit.logD
-import com.example.pagergallery.unit.shortToast
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 
 
 class UserDaoUtil(private val userDao: UserDao) {

@@ -1,6 +1,5 @@
 package com.example.pagergallery.fragment.home
 
-import android.graphics.Color
 import android.view.View
 import android.view.View.OnClickListener
 import androidx.core.content.ContextCompat
@@ -8,12 +7,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import androidx.viewpager2.widget.ViewPager2
 import com.example.pagergallery.R
 import com.example.pagergallery.databinding.FragmentBaseBinding
 import com.example.pagergallery.unit.base.BaseBindFragment
-import com.example.pagergallery.unit.enmu.ImageTypeEnum
-import com.example.pagergallery.unit.logD
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayoutMediator

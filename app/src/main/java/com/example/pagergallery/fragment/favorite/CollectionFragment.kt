@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.pagergallery.R
 import com.example.pagergallery.databinding.FragmentCollectionBinding
 import com.example.pagergallery.databinding.ImageCellBinding
+import com.example.pagergallery.fragment.mine.download.DownLoadViewModel
 import com.example.pagergallery.fragment.mine.download.ITEM_TYPE
 import com.example.pagergallery.fragment.mine.download.PHOTO_LIST
 import com.example.pagergallery.fragment.mine.download.POSITION
@@ -20,7 +21,7 @@ import com.example.pagergallery.unit.launchAndRepeatLifecycle
 import com.example.pagergallery.unit.loadImage
 
 class CollectionFragment : BaseBindFragment<FragmentCollectionBinding>(FragmentCollectionBinding::inflate) {
-    private val viewModel by viewModels<CollectViewModel>()
+    private val viewModel by viewModels<DownLoadViewModel>()
 
     override fun initView() {
         viewModel.setTitle("收藏")

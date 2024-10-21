@@ -6,8 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
 import com.example.pagergallery.unit.base.BaseBindFragment
-import com.example.pagergallery.unit.logD
-import kotlin.properties.Delegates
 
 abstract class LazyLoadFragment<V : ViewBinding>(
     inflate : (LayoutInflater,ViewGroup?,Boolean) -> V

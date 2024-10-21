@@ -8,7 +8,9 @@ import com.example.pagergallery.unit.TABLE_COLL_NAME
 @Entity(tableName = TABLE_COLL_NAME)
 data class Collection(
     @PrimaryKey val id : Long,
-    @ColumnInfo("hits") val hits: String
+    @ColumnInfo("hits") val hits: String,
+    @ColumnInfo("time")  val time : Long,
+    @ColumnInfo("user_id") val uid : Int
 )
 
 data class Hit(

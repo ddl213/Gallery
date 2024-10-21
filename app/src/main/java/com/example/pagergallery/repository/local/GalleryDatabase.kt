@@ -21,7 +21,7 @@ import com.example.pagergallery.unit.TABLE_QUERY_NAME
 
 @Database(
     entities = [Collection::class, HistoryQuery::class, Cache::class, User::class],
-    version = 8,
+    version = 9,
     exportSchema = false
 )
 @TypeConverters(ItemConverter::class)
@@ -34,7 +34,7 @@ abstract class GalleryDatabase : RoomDatabase() {
         fun getInstance(context: Context) =
             instance ?: synchronized(this) {
                 Room.databaseBuilder(context, GalleryDatabase::class.java, DB_NAME)
-                    .addMigrations(MIGRATION_7_8)
+                    .addMigrations(MIGRATION_8_9)
                     .build().also { instance = it }
             }
 
@@ -104,6 +104,15 @@ abstract class GalleryDatabase : RoomDatabase() {
                             "item TEXT NOT NULL," +
                             "time INTEGER NOT NULL )"
                 )
+            }
+        }
+        private val MIGRATION_8_9 = object : Migration(8,9) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("DELETE FROM table_cache")
+                db.execSQL("DELETE FROM collection")
+                db.execSQL("ALTER TABLE table_cache ADD user_id INTEGER NOT NULL")
+                db.execSQL("ALTER TABLE collection ADD user_id INTEGER NOT NULL")
+                db.execSQL("ALTER TABLE collection ADD time INTEGER NOT NULL")
             }
         }
     }

@@ -3,13 +3,10 @@ package com.example.pagergallery.fragment.mine
 import android.app.Application
 import android.net.Uri
 import android.provider.MediaStore
-import androidx.core.net.toUri
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.pagergallery.repository.Repository
 import com.example.pagergallery.repository.local.tables.user.User
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class MineViewModel(application: Application) : AndroidViewModel(application) {

@@ -1,13 +1,8 @@
 package com.example.pagergallery.repository.api
 
-import android.util.Log
-import androidx.paging.ExperimentalPagingApi
-import androidx.paging.LoadType
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import androidx.paging.RemoteMediator
 import com.example.pagergallery.repository.Repository
-import com.example.pagergallery.repository.local.tables.cache.Cache
 import com.example.pagergallery.unit.logD
 import retrofit2.HttpException
 import java.io.IOException

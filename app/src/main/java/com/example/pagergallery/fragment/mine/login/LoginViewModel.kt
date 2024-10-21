@@ -1,7 +1,6 @@
 package com.example.pagergallery.fragment.mine.login
 
 import android.app.Application
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AndroidViewModel
 import com.example.pagergallery.repository.Repository
 import com.example.pagergallery.unit.enmu.LoginNavigateTo

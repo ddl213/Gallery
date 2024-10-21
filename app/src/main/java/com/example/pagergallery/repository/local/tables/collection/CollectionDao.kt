@@ -1,7 +1,5 @@
 package com.example.pagergallery.repository.local.tables.collection
 
-import androidx.lifecycle.LiveData
-import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -13,8 +11,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface CollectionDao {
 
-    @Query("SELECT * FROM $TABLE_COLL_NAME")
-    fun getAllCollections() : Flow<List<Collection>>
+    @Query("SELECT * FROM $TABLE_COLL_NAME WHERE user_id = :uid ORDER BY time DESC")
+    fun getAllCollections(uid : Int) : Flow<List<Collection>>
 
     @Query("SELECT EXISTS(SELECT * FROM $TABLE_COLL_NAME WHERE id = :id)")
     suspend fun isCollection(id : Long) : Boolean

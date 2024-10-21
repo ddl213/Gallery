@@ -1,7 +1,6 @@
 package com.example.pagergallery.unit.base
 
 import android.content.Context
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.pagergallery.repository.Repository
 

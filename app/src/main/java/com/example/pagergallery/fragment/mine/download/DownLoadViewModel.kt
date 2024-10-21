@@ -32,8 +32,9 @@ class DownLoadViewModel(application: Application) : AndroidViewModel(application
     val cacheList: StateFlow<List<Item>> get() = _cacheList
 
     fun getCaches() {
+        val uid = repository.user.value?.id ?: return
         viewModelScope.launch {
-            cacheDaoUtil.getCaches()
+            cacheDaoUtil.getCaches(uid)
                 .flowOn(Dispatchers.IO)
                 .collect { list ->
                     list.map {
@@ -92,8 +93,9 @@ class DownLoadViewModel(application: Application) : AndroidViewModel(application
     val collectListLive: StateFlow<List<Item>> get() = _collectList
 
     fun getCollect() {
+        val uid = repository.user.value?.id ?: return
         viewModelScope.launch {
-            collectDaoUtil.getAllCollection()
+            collectDaoUtil.getAllCollection(uid)
                 .flowOn(Dispatchers.IO)
                 .collect { list ->
                     list.map { item ->

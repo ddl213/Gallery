@@ -2,7 +2,6 @@ package com.example.pagergallery.fragment.home
 
 import android.app.Application
 import androidx.compose.runtime.mutableStateOf
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn

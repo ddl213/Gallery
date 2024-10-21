@@ -1,12 +1,9 @@
 package com.example.pagergallery.repository.local.tables.cache
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-
 class CacheDaoUtil(private val cacheDao: CacheDao) {
 
     //查询
-    fun getCaches() = cacheDao.getCaches()
+    fun getCaches(uid : Int) = cacheDao.getCaches(uid)
 
     //添加
     suspend fun insertItemList(vararg cache: Cache) {

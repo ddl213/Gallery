@@ -24,7 +24,7 @@ interface CacheDao{
     @Update
     suspend fun updateCache(cache: Cache)
 
-    @Query("SELECT * FROM $TABLE_CACHE ORDER BY time DESC")
-    fun getCaches() : Flow<List<Cache>>
+    @Query("SELECT * FROM $TABLE_CACHE WHERE user_id = :uid ORDER BY time DESC")
+    fun getCaches(uid : Int) : Flow<List<Cache>>
 
 }

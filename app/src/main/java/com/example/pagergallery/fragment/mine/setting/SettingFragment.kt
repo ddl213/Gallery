@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.pagergallery.fragment.mine.MineViewModel
-import com.example.pagergallery.unit.logD
 import com.example.pagergallery.unit.view.SettingCompose
 import com.example.pagergallery.unit.view.SettingSelectEnum
 
