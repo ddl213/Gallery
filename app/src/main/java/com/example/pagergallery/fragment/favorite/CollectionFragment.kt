@@ -20,12 +20,13 @@ import com.example.pagergallery.unit.enmu.FragmentFromEnum
 import com.example.pagergallery.unit.launchAndRepeatLifecycle
 import com.example.pagergallery.unit.loadImage
 
-class CollectionFragment : BaseBindFragment<FragmentCollectionBinding>(FragmentCollectionBinding::inflate) {
+class CollectionFragment :
+    BaseBindFragment<FragmentCollectionBinding>(FragmentCollectionBinding::inflate) {
     private val viewModel by viewModels<DownLoadViewModel>()
 
     override fun initView() {
         viewModel.setTitle("收藏")
-        binding.collectRecyclerView.layoutManager = GridLayoutManager(requireContext(),4)
+        binding.collectRecyclerView.layoutManager = GridLayoutManager(requireContext(), 4)
     }
 
     override fun initData() {
@@ -36,22 +37,26 @@ class CollectionFragment : BaseBindFragment<FragmentCollectionBinding>(FragmentC
             }
         }
     }
-    private fun setData(list: List<Item>){
-        val mAdapter = adapterOf(list,ImageCellBinding::class.java,
-            initViewHolder){ h, _, item ->
-            h.itemView.context.loadImage(item.webFormatURL,h.binding.imgWebUrl)
+
+    private fun setData(list: List<Item>) {
+        val mAdapter = adapterOf(
+            list, ImageCellBinding::class.java,
+            initViewHolder
+        ) { h, _, item ->
+            h.itemView.context.loadImage(item.webFormatURL, h.binding.imgWebUrl)
         }
         binding.collectRecyclerView.adapter = mAdapter
     }
-    private val initViewHolder : (BaseViewHolder<ImageCellBinding>) -> Unit = {
-        it.itemView.setOnClickListener {  _ ->
+
+    private val initViewHolder: (BaseViewHolder<ImageCellBinding>) -> Unit = {
+        it.itemView.setOnClickListener { _ ->
             Bundle().apply {
                 putParcelableArrayList(
                     PHOTO_LIST,
                     ArrayList(viewModel.collectListLive.value)
                 )
                 putSerializable(ITEM_TYPE, FragmentFromEnum.Collect)
-                putInt(POSITION,it.absoluteAdapterPosition )
+                putInt(POSITION, it.absoluteAdapterPosition)
                 findNavController().navigate(
                     R.id.action_collectionFragment_to_largeViewFragment,
                     this
@@ -61,7 +66,6 @@ class CollectionFragment : BaseBindFragment<FragmentCollectionBinding>(FragmentC
     }
 
     override fun initEvent() {}
-
 
 
 }

@@ -65,6 +65,32 @@ fun Context.loadImage(url: String?, view: ImageView) = Glide.with(this)
     })
     .into(view)
 
+fun Context.loadImage(url: Bitmap?, view: ImageView) = Glide.with(this)
+    .load(url)
+    .placeholder(R.drawable.gray)
+    .listener(object : RequestListener<Drawable> {
+        override fun onLoadFailed(
+            e: GlideException?,
+            model: Any?,
+            target: Target<Drawable>,
+            isFirstResource: Boolean
+        ): Boolean {
+            logD("${e?.printStackTrace()}")
+            return false
+        }
+
+        override fun onResourceReady(
+            resource: Drawable,
+            model: Any,
+            target: Target<Drawable>?,
+            dataSource: DataSource,
+            isFirstResource: Boolean
+        ): Boolean {
+            return false
+        }
+    })
+    .into(view)
+
 //获取网络服务是否可用
 fun Context.isNetWorkAvailable(): Boolean {
     val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?

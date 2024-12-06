@@ -45,7 +45,6 @@ class LargeVIewModel(application: Application) : AndroidViewModel(application) {
             photoListLiveData.value!![pos].apply {
                 cacheDaoUtil.insertItemList(Cache(this.id,photoListLiveData.value!![pos],System.currentTimeMillis(),uid))
             }
-
         }
     }
 

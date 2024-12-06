@@ -9,7 +9,9 @@ import android.view.WindowInsets
 import android.view.WindowInsetsController
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -47,15 +49,19 @@ class LargeViewFragment :
 
     @Suppress("DEPRECATION")
     override fun initView() {
+        //适配低版本获取序列化查看的图片类型
         val itemType = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arguments?.getSerializable(ITEM_TYPE, FragmentFromEnum::class.java)
                 ?: FragmentFromEnum.Error
         } else {
             arguments?.getSerializable(ITEM_TYPE) as FragmentFromEnum
         }
+
+        //当前选择的元素下标和图片数据
         val pos = arguments?.getInt(POSITION) ?: -1
         val list: List<Any>
 
+        //根据图片来源位置，选择是否显示底部工具栏
         when (itemType) {
             FragmentFromEnum.DownLoad -> {
                 isDownLoad = true
@@ -81,12 +87,10 @@ class LargeViewFragment :
 
         if (pos == -1 || list.isEmpty()) {
             logD("$pos -- ${list.size}")
-            requireContext().shortToast("发生了未知错误，请重新进入").show()
+            requireContext().shortToast("获取图片信息失败，请重新进入").show()
             return
         }
         itemCount = list.size
-        //初始化状态栏
-        initUI()
 
         //recyclerView适配器
         val mAdapter = adapterOf(
@@ -148,20 +152,6 @@ class LargeViewFragment :
         return list
     }
 
-    private fun initUI() {
-        binding.layoutActionBar.layoutActionBar.setPadding(0, 120, 0, 0)
-        requireActivity().window.apply {
-            WindowCompat.setDecorFitsSystemWindows(this, false)
-            attributes = attributes.apply {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    //如果没有这一行会显示异常
-                    this.layoutInDisplayCutoutMode =
-                        WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
-                }
-            }
-        }
-    }
-
     override fun initData() {
         setCollectState(binding.viewPager2.currentItem)
     }
@@ -172,7 +162,7 @@ class LargeViewFragment :
         }
 
         launchAndRepeatLifecycle {
-            viewModel.collectState.collect{
+            viewModel.collectState.collect {
 
             }
         }
@@ -192,7 +182,7 @@ class LargeViewFragment :
     private fun setCollectState(pos: Int) {
         if (shouldCache) viewModel.cache(pos)
         if (!isDownLoad) {
-            lifecycleScope.launch {
+            launchAndRepeatLifecycle {
                 viewModel.setCollectState(pos)
                 viewModel.photoListLiveData.value!![pos].isCollected.let {
                     viewModel.setCollectState(it)
@@ -207,6 +197,7 @@ class LargeViewFragment :
         )
     }
 
+    //沉浸看图模式
     private val isImmerseImageModel = MutableStateFlow(false)
     private val initViewHolder: (BaseViewHolder<LargeViewCellBinding>) -> Unit
         get() = {
@@ -225,10 +216,10 @@ class LargeViewFragment :
     //点击切换看图模式
     private fun setPicMode(shouldHide: Boolean, color: Int) {
         if (shouldHide) {
-            hideStatusBar()
+            controller.hide(WindowInsetsCompat.Type.statusBars())
             translationUp()
         } else {
-            showStatusBar()
+            controller.show(WindowInsetsCompat.Type.statusBars())
             translationDown()
         }
         if (!isVector) {
@@ -242,48 +233,30 @@ class LargeViewFragment :
     }
 
     //隐藏和显示状态栏
-    @Suppress("DEPRECATION")
-    private fun hideStatusBar() {
-        requireActivity().window.apply {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                insetsController?.systemBarsBehavior =
-                    WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                insetsController?.hide(WindowInsets.Type.statusBars())
-            } else {
-                setFlags(
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN
-                )
-                decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN or
-                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-            }
-        }
+    private val controller by lazy {
+        WindowCompat.getInsetsController(
+            requireActivity().window,
+            binding.root
+        )
     }
 
-    @Suppress("DEPRECATION")
+    private fun hideStatusBar() {
+
+    }
+
     private fun showStatusBar() {
-        requireActivity().window.apply {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                insetsController?.show(WindowInsets.Type.statusBars())
-            } else {
-                clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-                decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-            }
-        }
     }
 
     private fun translationUp() {
         val view1 = binding.layoutActionBar.layoutActionBar
         val items = mutableListOf<Animator>()
 
+        items.add(ObjectAnimator.ofFloat(view1, "translationY", 0f, -80f))
+        items.add(ObjectAnimator.ofFloat(view1, "alpha", 0.5f, 0f))
         if (!isDownLoad) {
             items.add(ObjectAnimator.ofFloat(binding.bottomToolBar, "translationY", 0f, 50f))
-            items.add(ObjectAnimator.ofFloat(binding.bottomToolBar, "alpha", 0.7f, 0f))
+            items.add(ObjectAnimator.ofFloat(binding.bottomToolBar, "alpha", 0.5f, 0f))
         }
-
-        items.add(ObjectAnimator.ofFloat(view1, "translationY", 0f, -80f))
-        items.add(ObjectAnimator.ofFloat(view1, "alpha", 0.7f, 0f))
 
         AnimatorSet().apply animator@{
             playTogether(items)
@@ -305,17 +278,17 @@ class LargeViewFragment :
         val view1 = binding.layoutActionBar.layoutActionBar
         val items = mutableListOf<Animator>()
 
-        items.add(ObjectAnimator.ofFloat(view1, "translationY", -80f, 0f))
-        items.add(ObjectAnimator.ofFloat(view1, "alpha", 1f))
+        items.add(ObjectAnimator.ofFloat(view1, "translationY", -100f, 0f))
+        items.add(ObjectAnimator.ofFloat(view1, "alpha", 0.5f, 1f))
         if (!isDownLoad) {
             items.add(ObjectAnimator.ofFloat(binding.bottomToolBar, "translationY", 50f, 0f))
-            items.add(ObjectAnimator.ofFloat(binding.bottomToolBar, "alpha", 1f))
+            items.add(ObjectAnimator.ofFloat(binding.bottomToolBar, "alpha", 0.5f, 1f))
             binding.bottomToolBar.visibility = View.VISIBLE
         }
         view1.visibility = View.VISIBLE
         AnimatorSet().apply animator@{
             playTogether(items)
-            duration = 150
+            duration = 200
             start()
         }
     }
@@ -323,8 +296,8 @@ class LargeViewFragment :
     override fun onDestroy() {
         super.onDestroy()
         if (isImmerseImageModel.value) {
-            showStatusBar()
+            controller.show(WindowInsetsCompat.Type.statusBars())
         }
-        if (shouldCache) WindowCompat.setDecorFitsSystemWindows(requireActivity().window, true)
+        if (shouldCache) controller.show(WindowInsetsCompat.Type.statusBars())
     }
 }

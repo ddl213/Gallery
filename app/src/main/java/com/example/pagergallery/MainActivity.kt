@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
@@ -35,7 +36,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ActivityMainBinding.inflate(layoutInflater).let { binding = it }
-        window.statusBarColor = resources.getColor(R.color.teal_700, null)
+        enableEdgeToEdge()
         setContentView(binding.root)
 
         //获取NavController
@@ -43,7 +44,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         navController = navHost.navController
         navController.addOnDestinationChangedListener(this)
-        binding.topBar.setContent { AppBarCompose(visible.value,title.value?:"",canBack.value){
+        binding.topBar.setContent { AppBarCompose(visible.value,title.value ?: "",canBack.value){
             navController.popBackStack()
         } }
 
@@ -100,26 +101,12 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     }
 
     //设置标题栏可见性
-    private fun setTopAppBarVisible(visible: Boolean,canBack: Boolean, color: Int?) {
+    private fun setTopAppBarVisible(visible: Boolean,canBack: Boolean) {
         if (this.visible.value != visible) {
-            logD("visible:$visible")
             this.visible.value = visible
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                window.setDecorFitsSystemWindows(!visible)
-            }
         }
         if (this.canBack.value != canBack && visible){
             this.canBack.value = canBack
-        }
-        setStatusBarColor(color)
-    }
-
-    private fun setStatusBarColor(color: Int?) {
-        if (window.statusBarColor != color) {
-            window.statusBarColor = if (color != null) resources.getColor(
-                color,
-                null
-            ) else Color.TRANSPARENT
         }
     }
 
@@ -139,22 +126,21 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     ) {
         when (destination.id) {
             R.id.baseFragment, R.id.mineFragment -> {
-                setTopAppBarVisible(false, canBack = false, color = R.color.teal_700)
-                //setStatusBarColor(R.color.teal_700)
+                setTopAppBarVisible(false, canBack = false)
                 setVisible(View.VISIBLE)
             }
 
             R.id.collectionFragment -> {
-                setTopAppBarVisible(true, canBack = false, color = null)
+                setTopAppBarVisible(true, canBack = false)
                 setVisible(View.VISIBLE)
             }
             R.id.queryFragment,R.id.showQueryFragment ,
             R.id.largeViewFragment->{
-                setTopAppBarVisible(false, canBack = false, color = null)
+                setTopAppBarVisible(false, canBack = false)
                 setVisible(View.GONE)
             }
             else -> {
-                setTopAppBarVisible(true, canBack = true, color = null)
+                setTopAppBarVisible(true, canBack = true)
                 setVisible(View.GONE)
             }
         }

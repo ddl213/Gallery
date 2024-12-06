@@ -41,7 +41,7 @@ fun BottomAppBar(
                 painter = painterResource(if (isCollect) R.drawable.ic_baseline_star_24 else R.drawable.ic_baseline_star_border_24),
                 contentDescription = "收藏",
                 modifier = Modifier
-                    .size(36.dp)
+                    .size(24.dp)
                     .clickable {
                         onClick(true)
                     }
@@ -52,7 +52,7 @@ fun BottomAppBar(
                 painter = painterResource(R.drawable.baseline_download_24),
                 contentDescription = "下载",
                 modifier = Modifier
-                    .size(36.dp)
+                    .size(24.dp)
                     .clickable { onClick(false) }
             )
             Spacer(modifier = Modifier.width(16.dp))

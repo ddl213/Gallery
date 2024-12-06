@@ -1,7 +1,12 @@
 package com.example.pagergallery.fragment.mine.download
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
@@ -11,6 +16,7 @@ import com.example.pagergallery.databinding.FragmentCollectionBinding
 import com.example.pagergallery.databinding.ImageCellBinding
 import com.example.pagergallery.fragment.mine.LARGE_VIEW_FROM
 import com.example.pagergallery.repository.api.Item
+import com.example.pagergallery.unit.ImageUtils
 import com.example.pagergallery.unit.base.BaseBindFragment
 import com.example.pagergallery.unit.base.BaseViewHolder
 import com.example.pagergallery.unit.base.adapterOf
@@ -22,6 +28,7 @@ import com.example.pagergallery.unit.shortToast
 const val PHOTO_LIST = "photo_list"
 const val POSITION = "position"
 const val ITEM_TYPE = "item_type"
+
 class DownLoadFragment :
     BaseBindFragment<FragmentCollectionBinding>(FragmentCollectionBinding::inflate) {
     private val viewModel by viewModels<DownLoadViewModel>()
@@ -45,19 +52,19 @@ class DownLoadFragment :
     }
 
     override fun initData() {
-        when(isDownLoad){
-            FragmentFromEnum.DownLoad ->{
+        when (isDownLoad) {
+            FragmentFromEnum.DownLoad -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     viewModel.getFilePath(requireActivity())
                 }
-                launchAndRepeatLifecycle(Lifecycle.State.STARTED){
-                    viewModel.downLoadViewList.collect{
+                launchAndRepeatLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.downLoadViewList.collect {
                         setData(it)
                     }
                 }
                 setTopBarInfo("下载")
             }
-            FragmentFromEnum.Collect ->{
+            FragmentFromEnum.Collect -> {
                 setTopBarInfo("收藏")
                 viewModel.getCollect()
                 launchAndRepeatLifecycle(Lifecycle.State.STARTED) {
@@ -66,23 +73,23 @@ class DownLoadFragment :
                     }
                 }
             }
-            FragmentFromEnum.History ->{
+            FragmentFromEnum.History -> {
                 setTopBarInfo("历史记录")
                 viewModel.getCaches()
-                launchAndRepeatLifecycle(Lifecycle.State.STARTED){
-                    viewModel.cacheList.collect{
+                launchAndRepeatLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.cacheList.collect {
                         setData(it)
                     }
                 }
             }
-            else ->{
+            else -> {
                 requireContext().shortToast("未知错误").show()
                 findNavController().popBackStack()
             }
         }
     }
 
-    private fun setTopBarInfo(title : String){
+    private fun setTopBarInfo(title: String) {
         viewModel.setTitle(title)
     }
 
@@ -92,7 +99,10 @@ class DownLoadFragment :
             initViewHolder
         ) { h, _, item ->
             if (item is String) h.itemView.context.loadImage(item, h.binding.imgWebUrl)
-            else if (item is Item) h.itemView.context.loadImage(item.webFormatURL, h.binding.imgWebUrl)
+            else if (item is Item) h.itemView.context.loadImage(
+                item.webFormatURL,
+                h.binding.imgWebUrl
+            )
         }
         binding.collectRecyclerView.adapter = mAdapter
     }
@@ -102,26 +112,30 @@ class DownLoadFragment :
             setBundle(it.absoluteAdapterPosition)
         }
     }
-    private fun setBundle(pos : Int){
+
+    private fun setBundle(pos: Int) {
         val bundle = Bundle()
-        when(isDownLoad){
-            FragmentFromEnum.DownLoad ->{
+        when (isDownLoad) {
+            FragmentFromEnum.DownLoad -> {
                 bundle.putStringArrayList(PHOTO_LIST, ArrayList(viewModel.downLoadViewList.value))
             }
-            FragmentFromEnum.Collect ->{
+
+            FragmentFromEnum.Collect -> {
                 bundle.putSerializable(PHOTO_LIST, ArrayList(viewModel.collectListLive.value))
             }
-            FragmentFromEnum.History ->{
+
+            FragmentFromEnum.History -> {
                 bundle.putSerializable(PHOTO_LIST, ArrayList(viewModel.cacheList.value))
             }
+
             else -> {}
         }
-        bundle.putSerializable(ITEM_TYPE,isDownLoad)
+        bundle.putSerializable(ITEM_TYPE, isDownLoad)
         bundle.putInt(POSITION, pos)
         findNavController().navigate(
-                R.id.action_downLoadFragment_to_largeViewFragment,
-                bundle
-            )
+            R.id.action_downLoadFragment_to_largeViewFragment,
+            bundle
+        )
     }
 
     override fun initEvent() {

@@ -41,7 +41,6 @@ fun AppBarCompose(
         color = Color(0xFF018786)
     ) {
         Column {
-
             Spacer(modifier = Modifier.statusBarsPadding())
             Box {
                 Box(
@@ -67,7 +66,7 @@ fun AppBarCompose(
                 Box {
                     Text(
                         text = title,
-                        fontSize = 18.sp,
+                        fontSize = 16.sp,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(48.dp)

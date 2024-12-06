@@ -22,8 +22,8 @@ class BaseFragment : BaseBindFragment<FragmentBaseBinding>(FragmentBaseBinding::
 
     override fun initView() {
 
-        binding.layoutTab.root.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.teal_700))
-        binding.layoutTab.tabType.setSelectedTabIndicatorColor(ContextCompat.getColor(requireContext(),R.color.white))
+        //binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.teal_700))
+        binding.tabType.setSelectedTabIndicatorColor(ContextCompat.getColor(requireContext(),R.color.white))
 
         binding.viewpager2.adapter = object : FragmentStateAdapter(this) {
             override fun getItemCount(): Int = 4
@@ -31,7 +31,7 @@ class BaseFragment : BaseBindFragment<FragmentBaseBinding>(FragmentBaseBinding::
                 return GalleryFragment(false, list_type[position])
             }
         }
-        TabLayoutMediator(binding.layoutTab.tabType,binding.viewpager2) { tab, position ->
+        TabLayoutMediator(binding.tabType,binding.viewpager2) { tab, position ->
             when(position){
                 0 -> tab.text = "推荐"
                 1 -> tab.text = "照片"
@@ -44,15 +44,15 @@ class BaseFragment : BaseBindFragment<FragmentBaseBinding>(FragmentBaseBinding::
 
     override fun initData() {
         if (viewModel.reLoadState.value) {
-            binding.layoutTab.tabType.apply {
+            binding.tabType.apply {
                 selectTab(getTabAt(viewModel.currentTab.value))
             }
             binding.viewpager2.setCurrentItem(viewModel.currentTab.value,false)
         }
     }
     override fun initEvent() {
-        binding.layoutTab.tabType.addOnTabSelectedListener(this)
-        binding.layoutTab.imgSearch.setOnClickListener(this)
+        binding.tabType.addOnTabSelectedListener(this)
+        binding.imgSearch.setOnClickListener(this)
     }
 
     override fun onTabSelected(tab: TabLayout.Tab?) {

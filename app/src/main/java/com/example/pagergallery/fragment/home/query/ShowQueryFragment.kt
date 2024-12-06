@@ -26,14 +26,14 @@ class ShowQueryFragment : BaseBindFragment<FragmentShowQueryBinding>(FragmentSho
 
     override fun initView() {
         currentTab = viewModel.currentTab.value
-        binding.layoutBase.viewpager2.adapter = object : FragmentStateAdapter(this) {
+        binding.viewpager2.adapter = object : FragmentStateAdapter(this) {
             override fun getItemCount(): Int = 4
             override fun createFragment(position: Int): Fragment {
                 return GalleryFragment(true, list_type[position])
             }
         }
 
-        TabLayoutMediator(binding.layoutBase.layoutTab.tabType,binding.layoutBase.viewpager2) { tab, position ->
+        TabLayoutMediator(binding.tabType,binding.viewpager2) { tab, position ->
             when(position){
                 0 -> tab.text = "推荐"
                 1 -> tab.text = "照片"
@@ -49,7 +49,7 @@ class ShowQueryFragment : BaseBindFragment<FragmentShowQueryBinding>(FragmentSho
 
     override fun initEvent() {
         setCloseButton()
-        binding.layoutBase.layoutTab.tabType.addOnTabSelectedListener(this)
+        binding.tabType.addOnTabSelectedListener(this)
         binding.layoutSearch.etSearch.setText(arguments?.getString("QUERY_TEXT"))
     }
 

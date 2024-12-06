@@ -21,7 +21,7 @@ fun LoginButtonCompose(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(120.dp)
+            .height(144.dp)
             .background(Color(0XFF018786)),
         verticalArrangement = Arrangement.Center,//设置水平居中对齐
         horizontalAlignment =  Alignment.CenterHorizontally//设置垂直居中对齐
