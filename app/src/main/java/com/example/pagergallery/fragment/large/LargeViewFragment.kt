@@ -6,11 +6,13 @@ import android.animation.ObjectAnimator
 import android.os.Build
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.example.pagergallery.MainActivity
 import com.example.pagergallery.R
@@ -98,6 +100,11 @@ class LargeViewFragment :
         }
 
         //recyclerView适配器
+//        mAdapter.initViewHolder { holder ->
+//            val layoutParams = ViewGroup.MarginLayoutParams(holder.binding.photoView.layoutParams)
+//            layoutParams.setMargins(10,0,10,10)
+//            holder.binding.photoView.layoutParams = layoutParams
+//        }
         mAdapter.setNewInstance(list)
 
         binding.viewPager2.apply {
@@ -105,6 +112,7 @@ class LargeViewFragment :
             adapter = mAdapter
             setCurrentItem(pos, false)
             registerOnPageChangeCallback(pageChangeCallBack)
+            setPageTransformer(MarginPageTransformer(30))
         }
     }
 

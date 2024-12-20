@@ -32,7 +32,7 @@ abstract class BaseAdapter<T, VB : ViewBinding>(
     private var mOnItemChildClickListener: OnItemChildClickListener? = null
 
     private val inflateMethod = viewBindingClass.getInflateMethod()
-    //abstract val initViewHolder: (BaseViewHolder<VB>) -> Unit
+    private var initViewHolder: ((BaseViewHolder<VB>) -> Unit)? = null
 
     @Suppress("UNCHECKED_CAST")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<VB> {
@@ -43,7 +43,7 @@ abstract class BaseAdapter<T, VB : ViewBinding>(
                 parent,
                 false
             ) as VB,
-            //initViewHolder
+            initViewHolder
         )
 
         bindViewClickListener(holder)
@@ -60,6 +60,10 @@ abstract class BaseAdapter<T, VB : ViewBinding>(
 
     private fun <VB : ViewBinding> Class<VB>.getInflateMethod() =
         getMethod("inflate", LayoutInflater::class.java, ViewGroup::class.java, Boolean::class.java)
+
+    fun initViewHolder(block: (BaseViewHolder<VB>) -> Unit) {
+        initViewHolder = block
+    }
 
     //绑定控件点击事件
     private fun bindViewClickListener(holder: BaseViewHolder<VB>) {
@@ -253,7 +257,15 @@ abstract class BaseAdapter<T, VB : ViewBinding>(
 
 }
 
-class BaseViewHolder<VB : ViewBinding>(val binding: VB) : RecyclerView.ViewHolder(binding.root) {}
+class BaseViewHolder<VB : ViewBinding>(
+    val binding: VB,
+    init: ((BaseViewHolder<VB>) -> Unit)? = null
+) : RecyclerView.ViewHolder(binding.root) {
+
+    init {
+        init?.invoke(this)
+    }
+}
 
 inline fun <T, reified VB : ViewBinding> adapterOf(
     clazz: Class<VB> = VB::class.java,
