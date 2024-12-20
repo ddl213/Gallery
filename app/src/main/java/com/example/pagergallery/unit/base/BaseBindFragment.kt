@@ -1,22 +1,20 @@
 package com.example.pagergallery.unit.base
 
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.viewbinding.ViewBinding
 
-abstract class BaseBindFragment<V : ViewBinding>(private val inflate: (LayoutInflater, ViewGroup?, Boolean) -> V) : Fragment(){
+abstract class BaseBindFragment<V : ViewBinding>(private val inflate: (LayoutInflater, ViewGroup?, Boolean) -> V) :
+    Fragment() {
 
-    private var _binding : V? = null//私有的binding用于获取传进来的binding
+    private var _binding: V? = null//私有的binding用于获取传进来的binding
     protected val binding get() = _binding!!//只读的binding，用于暴露出去
 
-    private val viewModel by activityViewModels<BaseViewModel>{
+    private val viewModel by activityViewModels<BaseViewModel> {
         MyViewModelFactory(requireContext(), BaseViewModel::class.java)
     }
 
@@ -26,7 +24,7 @@ abstract class BaseBindFragment<V : ViewBinding>(private val inflate: (LayoutInf
         savedInstanceState: Bundle?
     ): View? {
         //接收传递的binding
-        _binding = inflate(inflater,container,false)
+        _binding = inflate(inflater, container, false)
         //由于_binding是可变的，所以使用binding
         return binding.root
     }
@@ -48,6 +46,4 @@ abstract class BaseBindFragment<V : ViewBinding>(private val inflate: (LayoutInf
         //置空
         _binding = null
     }
-
-
 }

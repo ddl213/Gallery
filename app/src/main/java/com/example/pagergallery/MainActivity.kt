@@ -1,8 +1,7 @@
 package com.example.pagergallery
 
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -26,27 +25,39 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
-    private val viewModel by viewModels<BaseViewModel>{
-        MyViewModelFactory(application.applicationContext,BaseViewModel::class.java)
+
+    private val viewModel by viewModels<BaseViewModel> {
+        MyViewModelFactory(application.applicationContext, BaseViewModel::class.java)
     }
+
     private val visible = mutableStateOf(false)
     private val canBack = mutableStateOf(false)
     private val title = mutableStateOf<String?>(null)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         ActivityMainBinding.inflate(layoutInflater).let { binding = it }
         enableEdgeToEdge()
         setContentView(binding.root)
 
+        initView()
+
+        //获取异步数据
+        collect()
+    }
+
+    private fun initView() {
         //获取NavController
         val navHost =
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         navController = navHost.navController
         navController.addOnDestinationChangedListener(this)
-        binding.topBar.setContent { AppBarCompose(visible.value,title.value ?: "",canBack.value){
-            navController.popBackStack()
-        } }
+        binding.topBar.setContent {
+            AppBarCompose(visible.value, title.value ?: "", canBack.value) {
+                navController.popBackStack()
+            }
+        }
 
         binding.botNavComposeView.setContent {
             BottomNavigationCompose(visible.value) {
@@ -61,18 +72,65 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
                 }
             }
         }
-
-        //获取异步数据
-        collect()
     }
 
-    private fun collect(){
+    private fun collect() {
         //设置标题
         lifecycleScope.launch {
-            viewModel.title.collect{
+            viewModel.title.collect {
                 title.value = it
                 logD(it)
             }
+        }
+    }
+
+    private fun bnvNavigate(itemId: Int): Boolean {
+        if (navController.currentDestination?.id != itemId) {
+            navController.popBackStack()
+            navController.navigate(itemId)
+            return false
+        }
+        return true
+    }
+
+    override fun onDestinationChanged(
+        controller: NavController,
+        destination: NavDestination,
+        arguments: Bundle?
+    ) {
+        when (destination.id) {
+            R.id.baseFragment, R.id.mineFragment -> {
+                setTopAppBarVisible(visible = false, canBack = false)
+            }
+
+            R.id.collectionFragment -> {
+                setTopAppBarVisible(visible = true, canBack = false)
+            }
+
+            R.id.queryFragment, R.id.showQueryFragment, R.id.largeViewFragment -> {
+                setTopAppBarVisible(visible = false, canBack = false, botVisible = View.GONE)
+            }
+
+            else -> {
+                setTopAppBarVisible(visible = true, canBack = true, botVisible = View.GONE)
+            }
+        }
+    }
+
+    //设置标题栏可见性
+    private fun setTopAppBarVisible(
+        visible: Boolean,
+        canBack: Boolean,
+        botVisible: Int = View.VISIBLE
+    ) {
+        if (this.visible.value != visible) {
+            this.visible.value = visible
+        }
+        if (this.canBack.value != canBack && visible) {
+            this.canBack.value = canBack
+        }
+        if (botVisible != binding.botNavComposeView.visibility) {
+            binding.botNavComposeView.visibility = botVisible
         }
     }
 
@@ -100,63 +158,33 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         BottomNavigationCompose(shouldPadding, mBottomTabItems, onItemSelect)
     }
 
-    //设置标题栏可见性
-    private fun setTopAppBarVisible(visible: Boolean,canBack: Boolean) {
-        if (this.visible.value != visible) {
-            this.visible.value = visible
-        }
-        if (this.canBack.value != canBack && visible){
-            this.canBack.value = canBack
+    /**
+     * fragment重写OnTouchEvent
+     */
+    private val fragmentOnTouchListenerList = mutableListOf<FragmentOnTouchListener>()
+
+    interface FragmentOnTouchListener{
+        fun onTouchListener(ev : MotionEvent)
+    }
+
+    fun registerFragmentOnTouchEvent(fragmentOnTouchListener: FragmentOnTouchListener){
+        if (!fragmentOnTouchListenerList.contains(fragmentOnTouchListener)) {
+            fragmentOnTouchListenerList.add(fragmentOnTouchListener)
         }
     }
 
-    private fun bnvNavigate(itemId: Int): Boolean {
-        if (navController.currentDestination?.id != itemId) {
-            navController.popBackStack()
-            navController.navigate(itemId)
-            return false
-        }
-        return true
-    }
-
-    override fun onDestinationChanged(
-        controller: NavController,
-        destination: NavDestination,
-        arguments: Bundle?
-    ) {
-        when (destination.id) {
-            R.id.baseFragment, R.id.mineFragment -> {
-                setTopAppBarVisible(false, canBack = false)
-                setVisible(View.VISIBLE)
-            }
-
-            R.id.collectionFragment -> {
-                setTopAppBarVisible(true, canBack = false)
-                setVisible(View.VISIBLE)
-            }
-            R.id.queryFragment,R.id.showQueryFragment ,
-            R.id.largeViewFragment->{
-                setTopAppBarVisible(false, canBack = false)
-                setVisible(View.GONE)
-            }
-            else -> {
-                setTopAppBarVisible(true, canBack = true)
-                setVisible(View.GONE)
-            }
+    fun unRegisterFragmentOnTouchEvent(fragmentOnTouchListener: FragmentOnTouchListener){
+        if (fragmentOnTouchListenerList.contains(fragmentOnTouchListener)) {
+            fragmentOnTouchListenerList.add(fragmentOnTouchListener)
         }
     }
 
-    private fun setVisible(visible: Int) {
-        if (binding.botNavComposeView.visibility != visible) {
-            binding.botNavComposeView.visibility = visible
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        if (fragmentOnTouchListenerList.isNotEmpty()){
+            for (listener in fragmentOnTouchListenerList){
+                listener.onTouchListener(ev)
+            }
         }
+        return super.dispatchTouchEvent(ev)
     }
-
 }
-
-data class TopBarInfo(
-    var title: String? = null,
-    var visible: Boolean,
-    var canBack: Boolean,
-    var color: Int? = android.graphics.Color.TRANSPARENT
-)

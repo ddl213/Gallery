@@ -19,44 +19,69 @@ import com.example.pagergallery.unit.base.adapterOf
 import com.example.pagergallery.unit.enmu.FragmentFromEnum
 import com.example.pagergallery.unit.launchAndRepeatLifecycle
 import com.example.pagergallery.unit.loadImage
+import com.example.pagergallery.unit.logD
 
 class CollectionFragment :
     BaseBindFragment<FragmentCollectionBinding>(FragmentCollectionBinding::inflate) {
+
     private val viewModel by viewModels<DownLoadViewModel>()
+    private val mAdapter = adapterOf<Item,ImageCellBinding>(
+        ImageCellBinding::class.java,
+    ) { h, _, item ->
+        h.itemView.context.loadImage(item?.webFormatURL, h.binding.imgWebUrl)
+    }
 
     override fun initView() {
         viewModel.setTitle("收藏")
         binding.collectRecyclerView.layoutManager = GridLayoutManager(requireContext(), 4)
+        binding.collectRecyclerView.adapter = mAdapter
     }
 
     override fun initData() {
         viewModel.getCollect()
         launchAndRepeatLifecycle(Lifecycle.State.STARTED) {
             viewModel.collectListLive.collect {
-                setData(it)
+                mAdapter.setNewInstance(it.toMutableList())
+                logD(mAdapter.itemCount.toString())
             }
         }
     }
 
-    private fun setData(list: List<Item>) {
-        val mAdapter = adapterOf(
-            list, ImageCellBinding::class.java,
-            initViewHolder
-        ) { h, _, item ->
-            h.itemView.context.loadImage(item.webFormatURL, h.binding.imgWebUrl)
-        }
-        binding.collectRecyclerView.adapter = mAdapter
-    }
+//    private fun setData(list: List<Item>) {
+//        val mAdapter = adapterOf(
+//            list, ImageCellBinding::class.java,
+//        ) { h, _, item ->
+//            h.itemView.context.loadImage(item.webFormatURL, h.binding.imgWebUrl)
+//        }
+//
+//    }
 
-    private val initViewHolder: (BaseViewHolder<ImageCellBinding>) -> Unit = {
-        it.itemView.setOnClickListener { _ ->
+//    private val initViewHolder: (BaseViewHolder<ImageCellBinding>) -> Unit = {
+//        it.itemView.setOnClickListener { _ ->
+//            Bundle().apply {
+//                putParcelableArrayList(
+//                    PHOTO_LIST,
+//                    ArrayList(viewModel.collectListLive.value)
+//                )
+//                putSerializable(ITEM_TYPE, FragmentFromEnum.Collect)
+//                putInt(POSITION, it.absoluteAdapterPosition)
+//                findNavController().navigate(
+//                    R.id.action_collectionFragment_to_largeViewFragment,
+//                    this
+//                )
+//            }
+//        }
+//    }
+
+    override fun initEvent() {
+        mAdapter.setOnItemClickListener { _, _, position ->
             Bundle().apply {
                 putParcelableArrayList(
                     PHOTO_LIST,
                     ArrayList(viewModel.collectListLive.value)
                 )
                 putSerializable(ITEM_TYPE, FragmentFromEnum.Collect)
-                putInt(POSITION, it.absoluteAdapterPosition)
+                putInt(POSITION, position)
                 findNavController().navigate(
                     R.id.action_collectionFragment_to_largeViewFragment,
                     this
@@ -64,8 +89,6 @@ class CollectionFragment :
             }
         }
     }
-
-    override fun initEvent() {}
 
 
 }

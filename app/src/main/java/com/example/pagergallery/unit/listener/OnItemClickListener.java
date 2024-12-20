@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 
 import com.example.pagergallery.unit.base.BaseAdapter;
 
-import org.jetbrains.annotations.NotNull;
 
 public interface OnItemClickListener {
 

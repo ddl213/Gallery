@@ -4,18 +4,15 @@ import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.os.Build
+import android.view.MotionEvent
 import android.view.View
-import android.view.WindowInsets
-import android.view.WindowInsetsController
-import android.view.WindowManager
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
+import com.example.pagergallery.MainActivity
 import com.example.pagergallery.R
 import com.example.pagergallery.databinding.FragmentLargeViewBinding
 import com.example.pagergallery.databinding.LargeViewCellBinding
@@ -24,7 +21,6 @@ import com.example.pagergallery.fragment.mine.download.PHOTO_LIST
 import com.example.pagergallery.fragment.mine.download.POSITION
 import com.example.pagergallery.repository.api.Item
 import com.example.pagergallery.unit.base.BaseBindFragment
-import com.example.pagergallery.unit.base.BaseViewHolder
 import com.example.pagergallery.unit.base.adapterOf
 import com.example.pagergallery.unit.enmu.FragmentFromEnum
 import com.example.pagergallery.unit.launchAndRepeatLifecycle
@@ -33,18 +29,28 @@ import com.example.pagergallery.unit.logD
 import com.example.pagergallery.unit.shortToast
 import com.example.pagergallery.unit.view.BottomAppBar
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
 
 
 class LargeViewFragment :
     BaseBindFragment<FragmentLargeViewBinding>(FragmentLargeViewBinding::inflate) {
 
     private val viewModel by viewModels<LargeVIewModel>()
+    private val mAdapter = adapterOf<Item, LargeViewCellBinding>(
+        LargeViewCellBinding::class.java,
+    ) { holder, _, item ->
+//        if (!isDownLoad) {
+//            (item as Item).apply {
+//
+//            }
+//        } else {
+//            holder.itemView.context.loadImage((item as String), holder.binding.photoView)
+//        }
+        holder.itemView.context.loadImage((item)?.largeUrl, holder.binding.photoView)
+        isVector = item?.type == "vector/svg"
+    }
     private var shouldCache = false
     private var isDownLoad = false
     private var isVector = false
-
-    private var itemCount = 0
 
 
     @Suppress("DEPRECATION")
@@ -59,13 +65,13 @@ class LargeViewFragment :
 
         //当前选择的元素下标和图片数据
         val pos = arguments?.getInt(POSITION) ?: -1
-        val list: List<Any>
+        val list: MutableList<Item>
 
         //根据图片来源位置，选择是否显示底部工具栏
         when (itemType) {
             FragmentFromEnum.DownLoad -> {
                 isDownLoad = true
-                list = getStringList()
+                list = getItemList()
             }
 
             FragmentFromEnum.Collect,
@@ -90,23 +96,9 @@ class LargeViewFragment :
             requireContext().shortToast("获取图片信息失败，请重新进入").show()
             return
         }
-        itemCount = list.size
 
         //recyclerView适配器
-        val mAdapter = adapterOf(
-            list, LargeViewCellBinding::class.java,
-            initViewHolder
-        ) { holder, _, item ->
-            if (!isDownLoad) {
-                (item as Item).apply {
-                    holder.itemView.context.loadImage((item).largeUrl, holder.binding.photoView)
-                    isVector = this.type == "vector/svg"
-                }
-            } else {
-                holder.itemView.context.loadImage((item as String), holder.binding.photoView)
-            }
-            logD("$pos,${holder.absoluteAdapterPosition},${item}")
-        }
+        mAdapter.setNewInstance(list)
 
         binding.viewPager2.apply {
             offscreenPageLimit = 2
@@ -136,15 +128,15 @@ class LargeViewFragment :
         }
     }
 
-    private fun getStringList(): List<String> {
-        return arguments?.getStringArrayList(PHOTO_LIST)?.toList() ?: listOf()
-    }
+//    private fun getStringList(): List<Item> {
+//        //return arguments?.getParcelableArrayList(PHOTO_LIST,Item::class.java)?.toList() ?: listOf()
+//    }
 
     @Suppress("DEPRECATION")
-    private fun getItemList(): List<Item> {
+    private fun getItemList(): MutableList<Item> {
         val list = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-            arguments?.getParcelableArrayList(PHOTO_LIST, Item::class.java) ?: listOf()
-        else arguments?.getParcelableArrayList(PHOTO_LIST) ?: listOf()
+            arguments?.getParcelableArrayList(PHOTO_LIST, Item::class.java) ?: mutableListOf()
+        else arguments?.getParcelableArrayList(PHOTO_LIST) ?: mutableListOf()
         viewModel.setListLiveData(list)
         if (list.isNotEmpty() && list[0].type == "vector/svg") {
             isVector = true
@@ -161,6 +153,33 @@ class LargeViewFragment :
             findNavController().navigateUp()
         }
 
+        setPhotoOnTouchListener()
+        initLifecycleScope()
+    }
+
+    //设置图片触摸监听
+    private fun setPhotoOnTouchListener() {
+        mAdapter.addDoubleAndScaleListener(R.id.photoView)
+        mAdapter.setOnItemClickListener { adapter, view, position ->
+            isImmerseImageModel.value = !isImmerseImageModel.value
+        }
+        mAdapter.setOnItemScaleListener { adapter, view, position, scaleFactor ->
+            if (scaleFactor > 1.0 && !isImmerseImageModel.value) {
+                isImmerseImageModel.value = true
+            }
+        }
+
+        val onTouchListener = object : MainActivity.FragmentOnTouchListener {
+            override fun onTouchListener(ev: MotionEvent) {
+
+            }
+        }
+    }
+
+    /**
+     * 初始化协程
+     */
+    private fun initLifecycleScope() {
         launchAndRepeatLifecycle {
             viewModel.collectState.collect {
 
@@ -193,25 +212,25 @@ class LargeViewFragment :
         binding.layoutActionBar.textView2.text = resources.getString(
             R.string.pic_count,
             pos + 1,
-            itemCount
+            mAdapter.itemCount
         )
     }
 
     //沉浸看图模式
     private val isImmerseImageModel = MutableStateFlow(false)
-    private val initViewHolder: (BaseViewHolder<LargeViewCellBinding>) -> Unit
-        get() = {
-            it.binding.photoView.apply {
-                setOnViewTapListener { _, _, _ ->
-                    isImmerseImageModel.value = !isImmerseImageModel.value
-                }
-                setOnScaleChangeListener { scaleFactor, _, _ ->
-                    if (scaleFactor > 1.0 && !isImmerseImageModel.value) {
-                        isImmerseImageModel.value = true
-                    }
-                }
-            }
-        }
+//    private val initViewHolder: (BaseViewHolder<LargeViewCellBinding>) -> Unit
+//        get() = {
+//            it.binding.photoView.apply {
+//                setOnViewTapListener { _, _, _ ->
+//                    isImmerseImageModel.value = !isImmerseImageModel.value
+//                }
+//                setOnScaleChangeListener { scaleFactor, _, _ ->
+//                    if (scaleFactor > 1.0 && !isImmerseImageModel.value) {
+//                        isImmerseImageModel.value = true
+//                    }
+//                }
+//            }
+//        }
 
     //点击切换看图模式
     private fun setPicMode(shouldHide: Boolean, color: Int) {

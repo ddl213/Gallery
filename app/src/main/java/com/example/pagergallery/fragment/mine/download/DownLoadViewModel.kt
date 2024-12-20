@@ -11,7 +11,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.pagergallery.repository.Repository
 import com.example.pagergallery.repository.api.Item
 import com.example.pagergallery.repository.local.tables.collection.Collection
+import com.example.pagergallery.unit.KeyValueUtils
 import com.example.pagergallery.unit.logD
+import com.example.pagergallery.unit.manager.DownloadManager
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -53,39 +55,44 @@ class DownLoadViewModel(application: Application) : AndroidViewModel(application
     }
 
     //获取下载图片
-    private val _downLoadViewList = MutableStateFlow<List<String>>(listOf())
-    val downLoadViewList: StateFlow<List<String>> get() = _downLoadViewList
-    private val imagePath = "${MediaStore.Images.Media.EXTERNAL_CONTENT_URI}${File.separator}"
-    private val projection = arrayOf(MediaStore.Images.Media._ID)
+//    private val imagePath = "${MediaStore.Images.Media.EXTERNAL_CONTENT_URI}${File.separator}"
+//    private val projection = arrayOf(MediaStore.Images.Media._ID)
+//
+//    @RequiresApi(Build.VERSION_CODES.Q)
+//    private val select =
+//        "${MediaStore.Images.Media.RELATIVE_PATH} LIKE 'Pictures/${repository.user.value?.account}_gallery%' AND ${MediaStore.Images.Media.DISPLAY_NAME} LIKE 'pixabay_%' AND ${MediaStore.Images.Media.MIME_TYPE} =?"
+//    private val selectArgs = arrayOf("image/png")
+//    private val sortOrder = MediaStore.Images.Media.DATE_ADDED
 
-    @RequiresApi(Build.VERSION_CODES.Q)
-    private val select =
-        "${MediaStore.Images.Media.RELATIVE_PATH} LIKE 'Pictures/${repository.user.value?.account}_gallery%' AND ${MediaStore.Images.Media.DISPLAY_NAME} LIKE 'pixabay_%' AND ${MediaStore.Images.Media.MIME_TYPE} =?"
-    private val selectArgs = arrayOf("image/png")
-    private val sortOrder = MediaStore.Images.Media.DATE_ADDED
+//    @RequiresApi(Build.VERSION_CODES.Q)
+//    fun getFilePath(application: FragmentActivity) {
+//        val cursor = application.contentResolver.query(
+//            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+//            projection,
+//            select,
+//            selectArgs,
+//            sortOrder
+//        ) ?: return
+//
+//        if (cursor.count == 0) return
+//
+//        val list = mutableListOf<String>()
+//        while (cursor.moveToNext()) {
+//            cursor.getString(0).apply {
+//                val path = imagePath + this
+//                list.add(path)
+//                logD("getFilePath: $path")
+//            }
+//        }
+//        cursor.close()
+//        _downLoadViewList.value = list
+//    }
+    private val _downLoadViewList = MutableStateFlow<List<Item>>(listOf())
+    val downLoadViewList: StateFlow<List<Item>> get() = _downLoadViewList
 
-    @RequiresApi(Build.VERSION_CODES.Q)
-    fun getFilePath(application: FragmentActivity) {
-        val cursor = application.contentResolver.query(
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-            projection,
-            select,
-            selectArgs,
-            sortOrder
-        ) ?: return
-
-        if (cursor.count == 0) return
-
-        val list = mutableListOf<String>()
-        while (cursor.moveToNext()) {
-            cursor.getString(0).apply {
-                val path = imagePath + this
-                list.add(path)
-                logD("getFilePath: $path")
-            }
-        }
-        cursor.close()
-        _downLoadViewList.value = list
+    fun getDownload(){
+        val uid = repository.user.value?.id ?: return
+        _downLoadViewList.value = DownloadManager.getDownload(uid)
     }
 
     private val collectDaoUtil = repository.getCollectionDaoUtil()
