@@ -8,17 +8,17 @@ object KeyValueUtils {
 
     fun getInt(key : String) = mmkv.getInt(key,-100)
     fun setInt(key: String,value : Int){
-        mmkv.decodeInt(key,value)
+        mmkv.encode(key,value)
     }
 
     fun getLong(key : String) = mmkv.getLong(key,-100)
     fun setLong(key: String,value : Long){
-        mmkv.decodeLong(key,value)
+        mmkv.encode(key,value)
     }
 
     fun getFloat(key : String) = mmkv.getFloat(key,-100f)
     fun setFloat(key: String,value : Float){
-        mmkv.decodeFloat(key,value)
+        mmkv.encode(key,value)
     }
 
     fun getDouble(key : String) = mmkv.decodeDouble(key,-100.0)
@@ -28,12 +28,12 @@ object KeyValueUtils {
 
     fun getBoolean(key : String) = mmkv.getBoolean(key,false)
     fun setBoolean(key: String,value : Boolean){
-        mmkv.decodeBool(key,value)
+        mmkv.encode(key,value)
     }
 
     fun getString(key : String) = mmkv.getString(key,"")
     fun setString(key: String,value : String){
-        mmkv.decodeString(key,value)
+        mmkv.encode(key,value)
     }
 
     fun<T:Parcelable> getParcelable(key : String,clazz: Class<T>) = mmkv.decodeParcelable(key,clazz)

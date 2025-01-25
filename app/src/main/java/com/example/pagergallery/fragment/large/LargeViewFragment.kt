@@ -198,12 +198,6 @@ class LargeViewFragment :
                 isImmerseImageModel.value = true
             }
         }
-
-        val onTouchListener = object : MainActivity.FragmentOnTouchListener {
-            override fun onTouchListener(ev: MotionEvent) {
-
-            }
-        }
     }
 
     /**

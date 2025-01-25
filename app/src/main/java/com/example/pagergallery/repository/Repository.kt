@@ -20,6 +20,7 @@ import com.example.pagergallery.repository.local.tables.collection.CollectionDao
 import com.example.pagergallery.repository.local.tables.query.QueryDaoUtil
 import com.example.pagergallery.repository.local.tables.user.User
 import com.example.pagergallery.repository.local.tables.user.UserDaoUtil
+import com.example.pagergallery.unit.KeyValueUtils
 import com.example.pagergallery.unit.enmu.ImageTypeEnum
 import com.example.pagergallery.unit.logD
 import com.example.pagergallery.unit.view.TopBar
@@ -31,6 +32,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.withContext
 
 
+const val CURRENT_LOGIN_USER = "current_login_user"
 class Repository private constructor(context: Context) {
 
     //设置单例模式，只能实例化一个对象
@@ -42,57 +44,45 @@ class Repository private constructor(context: Context) {
             }
     }
 
-    private val sp = context.getSharedPreferences("gallery_shp", Context.MODE_PRIVATE)
-
     //当前用户实例
+    private val loginState = MutableStateFlow(false)
     private val _user = MutableStateFlow<User?>(null)
     val user: StateFlow<User?> = _user
 
-    //登录状态
-    private val loginState = mutableStateOf(false)
+    //是否保存用户信息
+    private val saveState = MutableStateFlow(false)
+
     fun getLoginState() = loginState.value
-    private fun setLoginState(state: Boolean) {
-        if (loginState.value != state) loginState.value = state
-    }
 
     init {
         initLoginState()
     }
 
     //获取登录状态
-    private fun initLoginState() {
-        loginState.value = sp.getBoolean("login_state", false).also {
-            if (!it) return
-            val str = sp.getString("user_info", null)
-            _user.value = Gson().fromJson(str, User::class.java)
-        }
+    fun initLoginState() {
+        val value = KeyValueUtils.getString(CURRENT_LOGIN_USER)
+        if (value.isNullOrEmpty()) return
+
+        _user.value = Gson().fromJson(value, User::class.java)
+        loginState.value = true
     }
 
     fun saveUserInfo() {
         if (!saveState.value) return
         saveState.value = false
-        sp.edit().apply {
-            putString("user_info", Gson().toJson(user.value))
-            putBoolean("login_state", loginState.value)
-            apply()
-        }
+        val value = if (user.value == null) "" else Gson().toJson(user.value)
+        KeyValueUtils.setString(CURRENT_LOGIN_USER,value)
     }
 
     fun setUser(user: User?) {
-        setLoginState(user != null)
-        shouldSave()
-        logD("repository:setUser1：${saveState.value}，loginState:${loginState.value},user:$user")
-        _user.value = user
-        logD("repository:user:${_user.value}")
-    }
-
-    //是否保存用户信息
-    private val saveState = MutableStateFlow(false)
-    private fun shouldSave() {
+        if (_user.value == user) return
         if (!saveState.value) saveState.value = true
+
+        _user.value = user
+        loginState.value = user != null
     }
 
-    fun getSaveState() = saveState
+
 
     //获取数据库实例
     private val galleryDB by lazy {
@@ -162,10 +152,11 @@ class Repository private constructor(context: Context) {
 
     //重新加载
     private val _reFresh = MutableStateFlow(false)
-    fun setReFresh(state: Boolean){
+    fun setReFresh(state: Boolean) {
         _reFresh.value = state
     }
-    val reFresh : StateFlow<Boolean> get() = _reFresh
+
+    val reFresh: StateFlow<Boolean> get() = _reFresh
 
 
     /**
@@ -242,7 +233,7 @@ class Repository private constructor(context: Context) {
     private val _canBack = MutableStateFlow(false)
     val canBack: StateFlow<Boolean> get() = _canBack
 
-    private val _color = MutableStateFlow(TopBar(R.color.teal_700,visible = false,false))
+    private val _color = MutableStateFlow(TopBar(R.color.teal_700, visible = false, false))
     val color: StateFlow<TopBar> get() = _color
 
     //设置标题栏可见性
@@ -279,7 +270,8 @@ class Repository private constructor(context: Context) {
     fun setTitle(title: String) {
         _title.value = title
     }
-    fun setVisible(visible: Boolean){
+
+    fun setVisible(visible: Boolean) {
         _visible.value = visible
     }
 }

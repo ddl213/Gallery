@@ -13,12 +13,14 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import com.example.pagergallery.databinding.ActivityMainBinding
+import com.example.pagergallery.repository.Repository
 import com.example.pagergallery.unit.base.BaseViewModel
 import com.example.pagergallery.unit.base.MyViewModelFactory
 import com.example.pagergallery.unit.logD
 import com.example.pagergallery.unit.view.AppBarCompose
 import com.example.pagergallery.unit.view.BottomItem
 import com.example.pagergallery.unit.view.BottomNavigationCompose
+import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedListener {
@@ -42,6 +44,8 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         setContentView(binding.root)
 
         initView()
+        MMKV.initialize(this)//78525483
+        Repository.getInstance(this).initLoginState()
 
         //获取异步数据
         collect()
@@ -158,33 +162,8 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         BottomNavigationCompose(shouldPadding, mBottomTabItems, onItemSelect)
     }
 
-    /**
-     * fragment重写OnTouchEvent
-     */
-    private val fragmentOnTouchListenerList = mutableListOf<FragmentOnTouchListener>()
-
-    interface FragmentOnTouchListener{
-        fun onTouchListener(ev : MotionEvent)
-    }
-
-    fun registerFragmentOnTouchEvent(fragmentOnTouchListener: FragmentOnTouchListener){
-        if (!fragmentOnTouchListenerList.contains(fragmentOnTouchListener)) {
-            fragmentOnTouchListenerList.add(fragmentOnTouchListener)
-        }
-    }
-
-    fun unRegisterFragmentOnTouchEvent(fragmentOnTouchListener: FragmentOnTouchListener){
-        if (fragmentOnTouchListenerList.contains(fragmentOnTouchListener)) {
-            fragmentOnTouchListenerList.add(fragmentOnTouchListener)
-        }
-    }
-
-    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        if (fragmentOnTouchListenerList.isNotEmpty()){
-            for (listener in fragmentOnTouchListenerList){
-                listener.onTouchListener(ev)
-            }
-        }
-        return super.dispatchTouchEvent(ev)
+    override fun onStop() {
+        super.onStop()
+        Repository.getInstance(this).saveUserInfo()
     }
 }

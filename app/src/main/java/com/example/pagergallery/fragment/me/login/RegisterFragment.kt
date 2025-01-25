@@ -94,7 +94,7 @@ class RegisterFragment : Fragment() {
     private val dialogClick: (isBack: Boolean) -> Unit
         get() = {
             if (it) {
-                findNavController().navigateUp()
+                findNavController().popBackStack()
                 Bundle().apply {
                     putLong("account", value.value)
                     findNavController().navigate(R.id.loginFragment, this)
