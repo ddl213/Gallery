@@ -1,4 +1,4 @@
-package com.example.pagergallery.fragment.mine.setting
+package com.example.pagergallery.fragment.me.setting
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +8,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.example.pagergallery.fragment.mine.MineViewModel
+import com.example.pagergallery.fragment.me.MineViewModel
 import com.example.pagergallery.unit.view.SettingCompose
 import com.example.pagergallery.unit.view.SettingSelectEnum
 

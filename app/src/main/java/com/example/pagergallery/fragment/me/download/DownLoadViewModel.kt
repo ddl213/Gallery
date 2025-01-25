@@ -1,18 +1,10 @@
-package com.example.pagergallery.fragment.mine.download
+package com.example.pagergallery.fragment.me.download
 
 import android.app.Application
-import android.os.Build
-import android.provider.MediaStore
-import androidx.annotation.RequiresApi
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.example.pagergallery.repository.Repository
 import com.example.pagergallery.repository.api.Item
-import com.example.pagergallery.repository.local.tables.collection.Collection
-import com.example.pagergallery.unit.KeyValueUtils
-import com.example.pagergallery.unit.logD
 import com.example.pagergallery.unit.manager.DownloadManager
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +12,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
-import java.io.File
 
 class DownLoadViewModel(application: Application) : AndroidViewModel(application) {
     val repository = Repository.getInstance(getApplication())

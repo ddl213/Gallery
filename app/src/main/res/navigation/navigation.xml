@@ -58,7 +58,7 @@
     </fragment>
     <fragment
         android:id="@+id/mineFragment"
-        android:name="com.example.pagergallery.fragment.mine.MineFragment"
+        android:name="com.example.pagergallery.fragment.me.MineFragment"
         android:label="@string/bnv_mine"
         tools:layout="@layout/fragment_mine" >
         <action
@@ -79,7 +79,7 @@
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.pagergallery.fragment.mine.login.LoginFragment"
+        android:name="com.example.pagergallery.fragment.me.login.LoginFragment"
         android:label="LoginFragment" >
         <action
             android:id="@+id/action_loginFragment_to_mineFragment"
@@ -90,7 +90,7 @@
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.example.pagergallery.fragment.mine.login.RegisterFragment"
+        android:name="com.example.pagergallery.fragment.me.login.RegisterFragment"
         android:label="RegisterFragment" >
         <action
             android:id="@+id/action_registerFragment_to_loginFragment"
@@ -98,7 +98,7 @@
     </fragment>
     <fragment
         android:id="@+id/infoFragment"
-        android:name="com.example.pagergallery.fragment.mine.info.InfoFragment"
+        android:name="com.example.pagergallery.fragment.me.info.InfoFragment"
         android:label="InfoFragment" >
         <action
             android:id="@+id/action_infoFragment_to_resetInfoFragment"
@@ -106,15 +106,15 @@
     </fragment>
     <fragment
         android:id="@+id/resetInfoFragment"
-        android:name="com.example.pagergallery.fragment.mine.info.ResetInfoFragment"
+        android:name="com.example.pagergallery.fragment.me.info.ResetInfoFragment"
         android:label="ResetInfoFragment" />
     <fragment
         android:id="@+id/settingFragment"
-        android:name="com.example.pagergallery.fragment.mine.setting.SettingFragment"
+        android:name="com.example.pagergallery.fragment.me.setting.SettingFragment"
         android:label="SettingFragment" />
     <fragment
         android:id="@+id/downLoadFragment"
-        android:name="com.example.pagergallery.fragment.mine.download.DownLoadFragment"
+        android:name="com.example.pagergallery.fragment.me.download.DownLoadFragment"
         android:label="fragment_down_load"
         tools:layout="@layout/fragment_down_load" >
         <action

@@ -12,9 +12,9 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.pagergallery.R
 import com.example.pagergallery.databinding.FragmentGalleryBinding
-import com.example.pagergallery.fragment.mine.download.ITEM_TYPE
-import com.example.pagergallery.fragment.mine.download.PHOTO_LIST
-import com.example.pagergallery.fragment.mine.download.POSITION
+import com.example.pagergallery.fragment.me.download.ITEM_TYPE
+import com.example.pagergallery.fragment.me.download.PHOTO_LIST
+import com.example.pagergallery.fragment.me.download.POSITION
 import com.example.pagergallery.unit.enmu.FragmentFromEnum
 import com.example.pagergallery.unit.launchAndRepeatLifecycle
 import com.example.pagergallery.unit.logD

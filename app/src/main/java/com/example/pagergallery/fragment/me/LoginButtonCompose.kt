@@ -1,4 +1,4 @@
-package com.example.pagergallery.fragment.mine
+package com.example.pagergallery.fragment.me
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

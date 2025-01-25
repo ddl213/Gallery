@@ -24,7 +24,6 @@ import kotlinx.coroutines.launch
 class LargeVIewModel(application: Application) : AndroidViewModel(application) {
     private val repository = Repository.getInstance(getApplication())
     private val collectionDaoUtil: CollectionDaoUtil get() = repository.getCollectionDaoUtil()
-
     private val _collectState = MutableStateFlow(false)
     val collectState : StateFlow<Boolean> get() = _collectState
     fun setCollectState(state : Boolean) {
@@ -56,10 +55,8 @@ class LargeVIewModel(application: Application) : AndroidViewModel(application) {
         if (pos in leftIndex + 5..rightIndex - 5) return
 
         if (leftIndex == -1 && rightIndex == -1) {
-            logD("setCollectedState : $pos true")
             setCollectState(pos, true)
         } else {
-            logD("setCollectedState : $pos  false")
             setCollectState(pos, false)
         }
 
@@ -125,10 +122,13 @@ class LargeVIewModel(application: Application) : AndroidViewModel(application) {
         }
         viewModelScope.launch {
             _photoListLiveData.value?.get(pos)?.apply item@{
+
                 isCollected(this@item.id).apply state@{
-                    if (this@state) {
-                        removeColl(this@item.id)
+                    if (this@item.isCollected) {
+                        this@item.isCollected = false
+                        removeColl(this@item.id,uid)
                     } else {
+                        this@item.isCollected = true
                         addColl(this@item,uid)
                         logD("addColl")
                     }
@@ -141,7 +141,7 @@ class LargeVIewModel(application: Application) : AndroidViewModel(application) {
         }
     }
     //移除收藏
-    private suspend fun removeColl(id: Long) { collectionDaoUtil.deleteCollById(id) }
+    private suspend fun removeColl(id: Long,uid: Int) { collectionDaoUtil.deleteCollById(id,uid) }
 
     //添加收藏
     private suspend fun addColl(item: Item,uid : Int){

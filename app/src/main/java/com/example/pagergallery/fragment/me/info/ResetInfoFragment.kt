@@ -1,4 +1,4 @@
-package com.example.pagergallery.fragment.mine.info
+package com.example.pagergallery.fragment.me.info
 
 import android.app.Application
 import android.os.Build
@@ -6,7 +6,7 @@ import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.pagergallery.databinding.FragmentInfoResetBinding
-import com.example.pagergallery.fragment.mine.MineViewModel
+import com.example.pagergallery.fragment.me.MineViewModel
 import com.example.pagergallery.unit.base.BaseBindFragment
 import com.example.pagergallery.unit.base.MyViewModelFactory
 import com.example.pagergallery.unit.enmu.InfoFromEnum

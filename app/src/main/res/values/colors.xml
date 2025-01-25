@@ -12,6 +12,7 @@
     <color name="green_200">#FF1AD186</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="app_color">#F5F6F8</color>
     <color name="white1">#55FFFFFF</color>
     <color name="black1">#99000000</color>
     <color name="gray">#BEBEBE</color>

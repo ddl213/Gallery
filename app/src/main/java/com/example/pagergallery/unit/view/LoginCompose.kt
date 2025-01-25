@@ -68,6 +68,7 @@ fun LoginCompose(
                 contentDescription = "背景",
                 contentScale = ContentScale.FillHeight,
                 modifier = Modifier.fillMaxHeight()
+                    .fillMaxWidth()
             )
             Column(
                 modifier = Modifier.statusBarsPadding()

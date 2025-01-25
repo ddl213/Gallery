@@ -1,4 +1,4 @@
-package com.example.pagergallery.fragment.mine.download
+package com.example.pagergallery.fragment.me.download
 
 import android.os.Build
 import android.os.Bundle
@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.pagergallery.R
 import com.example.pagergallery.databinding.FragmentCollectionBinding
 import com.example.pagergallery.databinding.ImageCellBinding
-import com.example.pagergallery.fragment.mine.LARGE_VIEW_FROM
+import com.example.pagergallery.fragment.me.LARGE_VIEW_FROM
 import com.example.pagergallery.repository.api.Item
 import com.example.pagergallery.unit.base.BaseBindFragment
 import com.example.pagergallery.unit.base.BaseViewHolder

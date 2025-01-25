@@ -29,8 +29,8 @@ class CollectionDaoUtil(private val collDao: CollectionDao) {
     }
 
     //删除单个
-    suspend fun deleteCollById(id: Long) {
-        collDao.deleteColl(id)
+    suspend fun deleteCollById(id: Long,uid: Int) {
+        collDao.deleteColl(id,uid)
 
     }
 

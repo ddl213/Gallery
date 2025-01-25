@@ -24,8 +24,8 @@ interface CollectionDao {
     @Delete
     suspend fun deleteColl(collection: Collection)
 
-    @Query("DELETE FROM $TABLE_COLL_NAME WHERE id = :id")
-    suspend fun deleteColl(id: Long)
+    @Query("DELETE FROM $TABLE_COLL_NAME WHERE id = :id and user_id = :uid")
+    suspend fun deleteColl(id: Long,uid: Int)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertColl(vararg items : Collection)

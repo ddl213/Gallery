@@ -1,4 +1,4 @@
-package com.example.pagergallery.fragment.mine
+package com.example.pagergallery.fragment.me
 
 import android.content.Intent
 import android.graphics.BitmapFactory
@@ -14,7 +14,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.pagergallery.R
-import com.example.pagergallery.databinding.FragmentMineBinding
+import com.example.pagergallery.databinding.FragmentMeBinding
 import com.example.pagergallery.repository.local.tables.user.User
 import com.example.pagergallery.unit.base.BaseBindFragment
 import com.example.pagergallery.unit.enmu.FragmentFromEnum
@@ -23,7 +23,7 @@ import com.example.pagergallery.unit.logD
 import com.example.pagergallery.unit.shortToast
 
 const val LARGE_VIEW_FROM = "large_view_from"
-class MineFragment : BaseBindFragment<FragmentMineBinding>(FragmentMineBinding::inflate),
+class MineFragment : BaseBindFragment<FragmentMeBinding>(FragmentMeBinding::inflate),
     OnClickListener {
     private val viewModel by activityViewModels<MineViewModel> ()
 

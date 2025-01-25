@@ -8,13 +8,12 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.pagergallery.R
 import com.example.pagergallery.databinding.FragmentCollectionBinding
 import com.example.pagergallery.databinding.ImageCellBinding
-import com.example.pagergallery.fragment.mine.download.DownLoadViewModel
-import com.example.pagergallery.fragment.mine.download.ITEM_TYPE
-import com.example.pagergallery.fragment.mine.download.PHOTO_LIST
-import com.example.pagergallery.fragment.mine.download.POSITION
+import com.example.pagergallery.fragment.me.download.DownLoadViewModel
+import com.example.pagergallery.fragment.me.download.ITEM_TYPE
+import com.example.pagergallery.fragment.me.download.PHOTO_LIST
+import com.example.pagergallery.fragment.me.download.POSITION
 import com.example.pagergallery.repository.api.Item
 import com.example.pagergallery.unit.base.BaseBindFragment
-import com.example.pagergallery.unit.base.BaseViewHolder
 import com.example.pagergallery.unit.base.adapterOf
 import com.example.pagergallery.unit.enmu.FragmentFromEnum
 import com.example.pagergallery.unit.launchAndRepeatLifecycle

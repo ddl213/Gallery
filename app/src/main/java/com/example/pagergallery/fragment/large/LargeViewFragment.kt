@@ -3,13 +3,14 @@ package com.example.pagergallery.fragment.large
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.graphics.Color
 import android.os.Build
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
-import androidx.core.content.ContextCompat
+import android.view.WindowManager
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.MarginPageTransformer
@@ -18,9 +19,9 @@ import com.example.pagergallery.MainActivity
 import com.example.pagergallery.R
 import com.example.pagergallery.databinding.FragmentLargeViewBinding
 import com.example.pagergallery.databinding.LargeViewCellBinding
-import com.example.pagergallery.fragment.mine.download.ITEM_TYPE
-import com.example.pagergallery.fragment.mine.download.PHOTO_LIST
-import com.example.pagergallery.fragment.mine.download.POSITION
+import com.example.pagergallery.fragment.me.download.ITEM_TYPE
+import com.example.pagergallery.fragment.me.download.PHOTO_LIST
+import com.example.pagergallery.fragment.me.download.POSITION
 import com.example.pagergallery.repository.api.Item
 import com.example.pagergallery.unit.base.BaseBindFragment
 import com.example.pagergallery.unit.base.adapterOf
@@ -54,6 +55,13 @@ class LargeViewFragment :
     private var isDownLoad = false
     private var isVector = false
 
+    private val window by lazy { requireActivity().window }
+    private val controller by lazy {
+        WindowCompat.getInsetsController(
+            window,
+            window.decorView
+        )
+    }
 
     @Suppress("DEPRECATION")
     override fun initView() {
@@ -98,6 +106,7 @@ class LargeViewFragment :
             requireContext().shortToast("获取图片信息失败，请重新进入").show()
             return
         }
+        initUI()
 
         //recyclerView适配器
 //        mAdapter.initViewHolder { holder ->
@@ -111,9 +120,22 @@ class LargeViewFragment :
             offscreenPageLimit = 2
             adapter = mAdapter
             setCurrentItem(pos, false)
-            registerOnPageChangeCallback(pageChangeCallBack)
             setPageTransformer(MarginPageTransformer(30))
         }
+    }
+
+    //设置侵入挖孔屏，否则系统将会留出挖孔区域，该区域通常为黑色
+    private fun initUI() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        window.attributes = window.attributes.apply {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                //如果没有这一行会显示异常
+                layoutInDisplayCutoutMode =
+                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+            }
+        }
+
     }
 
     private fun shouldShowBottomBar() {
@@ -128,12 +150,25 @@ class LargeViewFragment :
         }
     }
 
-    private val pageChangeCallBack = object : OnPageChangeCallback() {
-        override fun onPageSelected(position: Int) {
-            super.onPageSelected(position)
-            setCollectState(position)
-            logD("onPageSelected:")
+    override fun initData() {
+        setCollectState(binding.viewPager2.currentItem)
+    }
+
+    override fun initEvent() {
+        binding.layoutActionBar.tvBack.setOnClickListener {
+            findNavController().navigateUp()
         }
+        binding.viewPager2.registerOnPageChangeCallback(object : OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                setCollectState(position)
+                logD("onPageSelected:")
+            }
+        })
+
+
+        setPhotoOnTouchListener()
+        initLifecycleScope()
     }
 
 //    private fun getStringList(): List<Item> {
@@ -150,19 +185,6 @@ class LargeViewFragment :
             isVector = true
         }
         return list
-    }
-
-    override fun initData() {
-        setCollectState(binding.viewPager2.currentItem)
-    }
-
-    override fun initEvent() {
-        binding.layoutActionBar.tvBack.setOnClickListener {
-            findNavController().navigateUp()
-        }
-
-        setPhotoOnTouchListener()
-        initLifecycleScope()
     }
 
     //设置图片触摸监听
@@ -199,13 +221,13 @@ class LargeViewFragment :
             isImmerseImageModel.collect {
                 setPicMode(
                     it,
-                    if (it) R.color.black else R.color.white
+                    if (it) Color.BLACK else resources.getColor(R.color.app_color, null)
                 )
             }
         }
     }
 
-    //设置收藏图标状态，并更改当前图片的收藏图标样式
+    /**设置收藏图标状态，并更改当前图片的收藏图标样式*/
     private fun setCollectState(pos: Int) {
         if (shouldCache) viewModel.cache(pos)
         if (!isDownLoad) {
@@ -224,65 +246,33 @@ class LargeViewFragment :
         )
     }
 
-    //沉浸看图模式
+    /**沉浸看图模式*/
     private val isImmerseImageModel = MutableStateFlow(false)
-//    private val initViewHolder: (BaseViewHolder<LargeViewCellBinding>) -> Unit
-//        get() = {
-//            it.binding.photoView.apply {
-//                setOnViewTapListener { _, _, _ ->
-//                    isImmerseImageModel.value = !isImmerseImageModel.value
-//                }
-//                setOnScaleChangeListener { scaleFactor, _, _ ->
-//                    if (scaleFactor > 1.0 && !isImmerseImageModel.value) {
-//                        isImmerseImageModel.value = true
-//                    }
-//                }
-//            }
-//        }
 
-    //点击切换看图模式
+
+    /**点击切换看图模式*/
     private fun setPicMode(shouldHide: Boolean, color: Int) {
+        if (!isVector) {
+            binding.root.setBackgroundColor(color)
+        }
         if (shouldHide) {
+            controller.systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
             controller.hide(WindowInsetsCompat.Type.statusBars())
             translationUp()
         } else {
             controller.show(WindowInsetsCompat.Type.statusBars())
             translationDown()
         }
-        if (!isVector) {
-            binding.viewPager2.setBackgroundColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    color
-                )
-            )
-        }
-    }
-
-    //隐藏和显示状态栏
-    private val controller by lazy {
-        WindowCompat.getInsetsController(
-            requireActivity().window,
-            binding.root
-        )
-    }
-
-    private fun hideStatusBar() {
-
-    }
-
-    private fun showStatusBar() {
     }
 
     private fun translationUp() {
         val view1 = binding.layoutActionBar.layoutActionBar
         val items = mutableListOf<Animator>()
 
-        items.add(ObjectAnimator.ofFloat(view1, "translationY", 0f, -80f))
-        items.add(ObjectAnimator.ofFloat(view1, "alpha", 0.5f, 0f))
+        items.add(ObjectAnimator.ofFloat(view1, "translationY", 0f, -240f))
         if (!isDownLoad) {
-            items.add(ObjectAnimator.ofFloat(binding.bottomToolBar, "translationY", 0f, 50f))
-            items.add(ObjectAnimator.ofFloat(binding.bottomToolBar, "alpha", 0.5f, 0f))
+            items.add(ObjectAnimator.ofFloat(binding.bottomToolBar, "translationY", 0f, 150f))
         }
 
         AnimatorSet().apply animator@{
@@ -296,7 +286,7 @@ class LargeViewFragment :
                     if (!isDownLoad) binding.bottomToolBar.visibility = View.GONE
                 }
             })
-            duration = 150
+            duration = 250
             start()
         }
     }
@@ -304,27 +294,23 @@ class LargeViewFragment :
     private fun translationDown() {
         val view1 = binding.layoutActionBar.layoutActionBar
         val items = mutableListOf<Animator>()
-
-        items.add(ObjectAnimator.ofFloat(view1, "translationY", -100f, 0f))
-        items.add(ObjectAnimator.ofFloat(view1, "alpha", 0.5f, 1f))
-        if (!isDownLoad) {
-            items.add(ObjectAnimator.ofFloat(binding.bottomToolBar, "translationY", 50f, 0f))
-            items.add(ObjectAnimator.ofFloat(binding.bottomToolBar, "alpha", 0.5f, 1f))
-            binding.bottomToolBar.visibility = View.VISIBLE
-        }
         view1.visibility = View.VISIBLE
+        items.add(ObjectAnimator.ofFloat(view1, "translationY", -60f, 0f))
+        if (!isDownLoad) {
+            binding.bottomToolBar.visibility = View.VISIBLE
+            items.add(ObjectAnimator.ofFloat(binding.bottomToolBar, "translationY", 50f, 0f))
+        }
         AnimatorSet().apply animator@{
             playTogether(items)
-            duration = 200
+            duration = 300
             start()
         }
     }
 
     override fun onDestroy() {
-        super.onDestroy()
-        if (isImmerseImageModel.value) {
+        if (isImmerseImageModel.value || shouldCache) {
             controller.show(WindowInsetsCompat.Type.statusBars())
         }
-        if (shouldCache) controller.show(WindowInsetsCompat.Type.statusBars())
+        super.onDestroy()
     }
 }

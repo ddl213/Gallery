@@ -1,4 +1,4 @@
-package com.example.pagergallery.fragment.mine.info
+package com.example.pagergallery.fragment.me.info
 
 import android.app.Application
 import android.content.Intent
@@ -13,8 +13,8 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.pagergallery.R
-import com.example.pagergallery.databinding.FragmentMineInfoBinding
-import com.example.pagergallery.fragment.mine.MineViewModel
+import com.example.pagergallery.databinding.FragmentMeInfoBinding
+import com.example.pagergallery.fragment.me.MineViewModel
 import com.example.pagergallery.unit.base.BaseBindFragment
 import com.example.pagergallery.unit.base.MyViewModelFactory
 import com.example.pagergallery.unit.enmu.InfoFromEnum
@@ -22,7 +22,7 @@ import com.example.pagergallery.unit.logD
 import com.example.pagergallery.unit.shortToast
 
 
-class InfoFragment :BaseBindFragment<FragmentMineInfoBinding>(FragmentMineInfoBinding::inflate), View.OnClickListener {
+class InfoFragment :BaseBindFragment<FragmentMeInfoBinding>(FragmentMeInfoBinding::inflate), View.OnClickListener {
 
     private val viewModel by activityViewModels<MineViewModel>{
         MyViewModelFactory(requireContext().applicationContext as Application, MineViewModel::class.java)

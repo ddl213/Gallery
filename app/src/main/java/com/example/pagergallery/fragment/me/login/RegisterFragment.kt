@@ -1,4 +1,4 @@
-package com.example.pagergallery.fragment.mine.login
+package com.example.pagergallery.fragment.me.login
 
 import android.os.Bundle
 import android.view.LayoutInflater

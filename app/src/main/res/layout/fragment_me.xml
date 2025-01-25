@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/light_grey"
     android:orientation="vertical"
-    tools:context=".fragment.mine.MineFragment">
+    tools:context=".fragment.me.MineFragment">
 
     <androidx.compose.ui.platform.ComposeView
         android:id="@+id/loginButtonCompose"
