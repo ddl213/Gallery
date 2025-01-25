@@ -67,7 +67,8 @@ fun LoginCompose(
                 painter = painterResource(id = R.drawable.app_bg_star),
                 contentDescription = "背景",
                 contentScale = ContentScale.FillHeight,
-                modifier = Modifier.fillMaxHeight()
+                modifier = Modifier
+                    .fillMaxHeight()
                     .fillMaxWidth()
             )
             Column(
@@ -163,10 +164,11 @@ fun LoginCompose(
                         Text(text = "登录", color = Color.White, fontSize = 18.sp)
                     }
 
-                    Spacer(modifier = Modifier.padding(vertical = 115.dp))
+                    //Spacer(modifier = Modifier.padding(vertical = 115.dp))
 
                     //第三方app及手机号登录
                     Column(modifier = Modifier.fillMaxWidth()) {
+                        Spacer(modifier = Modifier.weight(1f))
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
@@ -178,7 +180,7 @@ fun LoginCompose(
                                     .background(Color(0xFFCFC5C5))
                                     .padding(end = 10.dp)
                             ) {}
-                            Text(text = "第三方登录", color = Color.Gray, fontSize = 16.sp)
+                            Text(text = "第三方登录", color = Color.Gray, fontSize = 14.sp)
                             Row(
                                 modifier = Modifier
                                     .height(1.dp)
@@ -210,7 +212,9 @@ fun LoginCompose(
                                     Image(
                                         painter = painterResource(id = imageList[index]),
                                         contentDescription = null,
-                                        modifier = Modifier.size(32.dp).padding(bottom = 4.dp)
+                                        modifier = Modifier
+                                            .size(32.dp)
+                                            .padding(bottom = 4.dp)
                                     )
                                     Text(
                                         text = appNameList[index],

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -22,7 +23,8 @@ fun LoginButtonCompose(
         modifier = Modifier
             .fillMaxWidth()
             .height(144.dp)
-            .background(Color(0XFF018786)),
+            .background(Color(0XFF018786))
+            .padding(0.dp,70.dp,0.dp,0.dp),
         verticalArrangement = Arrangement.Center,//设置水平居中对齐
         horizontalAlignment =  Alignment.CenterHorizontally//设置垂直居中对齐
     ) {

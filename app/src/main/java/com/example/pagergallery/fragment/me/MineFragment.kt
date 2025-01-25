@@ -28,7 +28,6 @@ class MineFragment : BaseBindFragment<FragmentMeBinding>(FragmentMeBinding::infl
     private val viewModel by activityViewModels<MineViewModel> ()
 
     override fun initView() {
-
         if (!viewModel.getLoginState() ) {
             notLogIn()
         } else {

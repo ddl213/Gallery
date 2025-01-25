@@ -191,7 +191,7 @@ fun RegisterCompose(
     if (showDialog) {
         AlertDialog(
             modifier = Modifier
-                .clip(RoundedCornerShape(10.dp))
+                .clip(RoundedCornerShape(12.dp))
                 .fillMaxWidth(0.8f)
                 .background(Color.White),
             onDismissRequest = {  },
@@ -220,9 +220,9 @@ fun RegisterCompose(
                 ) {
                     TextButton(
                         modifier = Modifier
-                            .width(120.dp)
+                            .width(140.dp)
                             .height(35.dp)
-                            .padding(start = 5.dp, end = 20.dp)
+                            .padding(start = 16.dp, end = 20.dp)
                             .clip(RoundedCornerShape(20.dp))
                             .background(Color(0XFF46B8F1))
                             .wrapContentSize(Alignment.Center),
@@ -235,9 +235,9 @@ fun RegisterCompose(
                     }
                     TextButton(
                         modifier = Modifier
-                            .width(120.dp)
+                            .width(140.dp)
                             .height(35.dp)
-                            .padding(start = 5.dp, end = 20.dp)
+                            .padding( end = 16.dp)
                             .clip(RoundedCornerShape(20.dp))
                             .background(Color(0XFF1AD186))
                             .wrapContentSize(Alignment.Center),

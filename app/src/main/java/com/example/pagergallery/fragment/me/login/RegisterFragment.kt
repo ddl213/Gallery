@@ -13,7 +13,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.pagergallery.R
 import com.example.pagergallery.unit.launchAndRepeatLifecycle
-import com.example.pagergallery.unit.logD
 import com.example.pagergallery.unit.shortToast
 import com.example.pagergallery.unit.view.RegisterCompose
 
@@ -47,7 +46,6 @@ class RegisterFragment : Fragment() {
     }
 
     private fun click(phone: String, pwd: String, confirmPwd: String, account: String?) {
-
         if (!(phone.isNotEmpty() && phone.isDigitsOnly()) || phone.length != 11) {
             requireContext().shortToast("请输入正确的手机号码").show()
             return
@@ -70,7 +68,6 @@ class RegisterFragment : Fragment() {
             launchAndRepeatLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.register(pwd, phone.toLong()).let {
                     if (it != null) {
-                        logD("success11111:$it")
                         value.value = it
                     } else {
                         requireContext().shortToast("手机号码重复，注册失败").show()
