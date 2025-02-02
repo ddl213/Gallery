@@ -1,4 +1,4 @@
-package com.example.pagergallery.unit.base
+package com.example.pagergallery.unit.base.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.viewbinding.ViewBinding
+import com.example.pagergallery.unit.base.viewmodel.BaseViewModel
+import com.example.pagergallery.unit.base.viewmodel.MyViewModelFactory
 
 abstract class BaseBindFragment<V : ViewBinding>(private val inflate: (LayoutInflater, ViewGroup?, Boolean) -> V) :
     Fragment() {

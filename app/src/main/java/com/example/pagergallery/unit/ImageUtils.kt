@@ -19,8 +19,6 @@ object ImageUtils {
     /* 1. **灰度滤镜 (Grayscale)**
     - 将图片转换为灰度图像，去除颜色信息，仅保留亮度信息。
      */
-
-    
     fun applyGrayscale(bitmap: Bitmap): Bitmap {
         val width = bitmap.width
         val height = bitmap.height
@@ -83,8 +81,6 @@ object ImageUtils {
     /* 5. **模糊滤镜 (Gaussian Blur)**
     - 应用高斯模糊使图像看起来柔和。
      */
-
-    
     fun applyGaussianBlur(context: Context, bitmap: Bitmap): Bitmap {
         val rs = RenderScript.create(context)
         val input = Allocation.createFromBitmap(rs, bitmap)
@@ -118,8 +114,6 @@ object ImageUtils {
     /* 7. **模糊滤镜 (Invert Colors)**
     - 将图像中的每个像素的颜色进行反转。
      */
-
-    
     fun invertColors(bitmap: Bitmap): Bitmap {
         val width = bitmap.width
         val height = bitmap.height
@@ -216,8 +210,6 @@ object ImageUtils {
     /* 13. **Vignette 效果**
     - 为图像加上渐变阴影效果，使图片中心部分明亮，周围部分变暗。
      */
-
-    
     fun applyVignetteEffect(bitmap: Bitmap): Bitmap {
         val width = bitmap.width
         val height = bitmap.height
@@ -241,8 +233,6 @@ object ImageUtils {
     /* 14. **噪声滤镜 (Noise)**
     - 给图像添加噪点效果。
      */
-
-    
     fun applyNoise(bitmap: Bitmap): Bitmap {
         val random = Random()
         val width = bitmap.width
@@ -265,8 +255,6 @@ object ImageUtils {
     /* 15. **大理石纹理效果**
     - 给图像添加大理石纹理效果，通常使用噪声与色彩的渐变混合。
      */
-
-    
     fun applyMarbleTexture(bitmap: Bitmap): Bitmap {
         val width = bitmap.width
         val height
@@ -291,8 +279,6 @@ object ImageUtils {
     /* 16. **水彩画效果 (Watercolor Effect)**
     - 将图像处理为水彩画风格，通常使用模糊和颜色分离。
      */
-
-    
     fun applyWatercolorEffect(bitmap: Bitmap): Bitmap {
         val width = bitmap.width
         val height = bitmap.height
@@ -314,8 +300,6 @@ object ImageUtils {
     /* 17. **反色滤镜 (Negative Effect)**
     - 对图像的颜色进行反转。
      */
-
-    
     fun applyNegativeEffect(bitmap: Bitmap): Bitmap {
         val width = bitmap.width
         val height = bitmap.height
@@ -335,8 +319,6 @@ object ImageUtils {
     /* 18. **双重曝光效果 (Double Exposure)**
     - 将两张图片合并为一张，产生双重曝光效果。
      */
-
-    
     fun applyDoubleExposure(bitmap1: Bitmap, bitmap2: Bitmap): Bitmap {
         val width = bitmap1.width
         val height = bitmap1.height
@@ -364,8 +346,6 @@ object ImageUtils {
     /* 19. **镜像效果 (Mirror Effect)**
     - 对图像进行左右镜像反转。
      */
-
-    
     fun applyMirrorEffect(bitmap: Bitmap): Bitmap {
         val width = bitmap.width
         val height = bitmap.height
@@ -427,8 +407,6 @@ object ImageUtils {
     /* 22. **抽象艺术效果 (Abstract Art)**
     - 将图像转换为几何图形和抽象艺术风格。
      */
-
-    
     fun applyAbstractArtEffect(bitmap: Bitmap): Bitmap {
         val width = bitmap.width
         val height = bitmap.height

@@ -2,6 +2,7 @@ package com.example.pagergallery.fragment.me.download
 
 import android.os.Build
 import android.os.Bundle
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
@@ -11,9 +12,9 @@ import com.example.pagergallery.databinding.FragmentCollectionBinding
 import com.example.pagergallery.databinding.ImageCellBinding
 import com.example.pagergallery.fragment.me.LARGE_VIEW_FROM
 import com.example.pagergallery.repository.api.Item
-import com.example.pagergallery.unit.base.BaseBindFragment
-import com.example.pagergallery.unit.base.BaseViewHolder
-import com.example.pagergallery.unit.base.adapterOf
+import com.example.pagergallery.unit.base.adapter.BaseViewHolder
+import com.example.pagergallery.unit.base.adapter.adapterOf
+import com.example.pagergallery.unit.base.fragment.BaseBindFragment
 import com.example.pagergallery.unit.enmu.FragmentFromEnum
 import com.example.pagergallery.unit.launchAndRepeatLifecycle
 import com.example.pagergallery.unit.loadImage
@@ -27,18 +28,16 @@ class DownLoadFragment :
     BaseBindFragment<FragmentCollectionBinding>(FragmentCollectionBinding::inflate) {
 
     private val viewModel by viewModels<DownLoadViewModel>()
-    private val isDownLoad by lazy { getViewAt() }
+    private val fromPage by lazy { getViewAt() }
+    private var isDownLoad = false
     private val mAdapter = adapterOf<Item, ImageCellBinding>(
         ImageCellBinding::class.java
     ) { h, _, item ->
-//        if (item is String) h.itemView.context.loadImage(item, h.binding.imgWebUrl)
-//        else if (item is Item) h.itemView.context.loadImage(
-//            item.webFormatURL,
-//            h.binding.imgWebUrl
-//        )
+        val url = if (isDownLoad) item?.localUrl else item?.webFormatURL
         h.itemView.context.loadImage(
-            item?.webFormatURL,
-            h.binding.imgWebUrl
+            url,
+            h.binding.imgWebUrl,
+            isDownLoad
         )
     }
 
@@ -59,23 +58,24 @@ class DownLoadFragment :
     override fun initView() {
         binding.collectRecyclerView.layoutManager = GridLayoutManager(requireContext(), 4)
         binding.collectRecyclerView.adapter = mAdapter
+        isDownLoad = fromPage == FragmentFromEnum.DownLoad
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun initData() {
-        when (isDownLoad) {
+        viewModel.getData(fromPage, requireActivity())
+        when (fromPage) {
             FragmentFromEnum.DownLoad -> {
-                viewModel.getDownload()
+                setTopBarInfo("下载")
                 launchAndRepeatLifecycle(Lifecycle.State.STARTED) {
                     viewModel.downLoadViewList.collect {
                         mAdapter.setNewInstance(it.toMutableList())
                     }
                 }
-                setTopBarInfo("下载")
             }
 
             FragmentFromEnum.Collect -> {
                 setTopBarInfo("收藏")
-                viewModel.getCollect()
                 launchAndRepeatLifecycle(Lifecycle.State.STARTED) {
                     viewModel.collectListLive.collect {
                         mAdapter.setNewInstance(it.toMutableList())
@@ -85,7 +85,6 @@ class DownLoadFragment :
 
             FragmentFromEnum.History -> {
                 setTopBarInfo("历史记录")
-                viewModel.getCaches()
                 launchAndRepeatLifecycle(Lifecycle.State.STARTED) {
                     viewModel.cacheList.collect {
                         mAdapter.setNewInstance(it.toMutableList())
@@ -98,6 +97,13 @@ class DownLoadFragment :
                 findNavController().popBackStack()
             }
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    override fun onResume() {
+        super.onResume()
+
+        viewModel.updateData(fromPage, requireActivity())
     }
 
     //设置标题
@@ -119,14 +125,6 @@ class DownLoadFragment :
 //
 //    }
 
-    private val initViewHolder: (BaseViewHolder<ImageCellBinding>) -> Unit
-        get() = {
-            it.itemView.setOnClickListener { _ ->
-                setBundle(it.absoluteAdapterPosition)
-            }
-        }
-
-
 
     override fun initEvent() {
         mAdapter.setOnItemClickListener { _, _, position ->
@@ -137,7 +135,7 @@ class DownLoadFragment :
     //跳转大图页
     private fun setBundle(pos: Int) {
         val bundle = Bundle()
-        when (isDownLoad) {
+        when (fromPage) {
             FragmentFromEnum.DownLoad -> {
                 bundle.putSerializable(PHOTO_LIST, ArrayList(viewModel.downLoadViewList.value))
             }
@@ -152,7 +150,7 @@ class DownLoadFragment :
 
             else -> {}
         }
-        bundle.putSerializable(ITEM_TYPE, isDownLoad)
+        bundle.putSerializable(ITEM_TYPE, fromPage)
         bundle.putInt(POSITION, pos)
         findNavController().navigate(
             R.id.action_downLoadFragment_to_largeViewFragment,

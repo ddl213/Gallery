@@ -7,12 +7,12 @@ class CacheDaoUtil(private val cacheDao: CacheDao) {
 
     //添加
     suspend fun insertItemList(vararg cache: Cache) {
-        cacheDao.insertCaches(*cache)
+        cacheDao.insertAll(*cache)
     }
 
     //删除
     suspend fun deleteCache(cache: Cache) {
-        cacheDao.deleteCache(cache)
+        cacheDao.delete(cache)
     }
 
     suspend fun deleteAll() {
@@ -22,7 +22,7 @@ class CacheDaoUtil(private val cacheDao: CacheDao) {
 
     //更新
     suspend fun update(cache: Cache) {
-        cacheDao.updateCache(cache)
+        cacheDao.update(cache)
 
     }
 

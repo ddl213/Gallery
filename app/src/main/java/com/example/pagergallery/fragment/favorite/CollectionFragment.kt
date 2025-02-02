@@ -13,8 +13,8 @@ import com.example.pagergallery.fragment.me.download.ITEM_TYPE
 import com.example.pagergallery.fragment.me.download.PHOTO_LIST
 import com.example.pagergallery.fragment.me.download.POSITION
 import com.example.pagergallery.repository.api.Item
-import com.example.pagergallery.unit.base.BaseBindFragment
-import com.example.pagergallery.unit.base.adapterOf
+import com.example.pagergallery.unit.base.fragment.BaseBindFragment
+import com.example.pagergallery.unit.base.adapter.adapterOf
 import com.example.pagergallery.unit.enmu.FragmentFromEnum
 import com.example.pagergallery.unit.launchAndRepeatLifecycle
 import com.example.pagergallery.unit.loadImage
@@ -27,7 +27,7 @@ class CollectionFragment :
     private val mAdapter = adapterOf<Item,ImageCellBinding>(
         ImageCellBinding::class.java,
     ) { h, _, item ->
-        h.itemView.context.loadImage(item?.webFormatURL, h.binding.imgWebUrl)
+        h.itemView.context.loadImage(item?.webFormatURL, h.binding.imgWebUrl,false)
     }
 
     override fun initView() {

@@ -14,8 +14,6 @@ class CollectionDaoUtil(private val collDao: CollectionDao) {
         collDao.insertColl(*collections)
     }
 
-
-
     //删除多个
     suspend fun deleteAll() {
         collDao.deleteAllCollections()
@@ -24,7 +22,7 @@ class CollectionDaoUtil(private val collDao: CollectionDao) {
 
     //删除单个
     suspend fun deleteColl(collection: Collection) {
-        collDao.deleteColl(collection)
+        collDao.delete(collection)
 
     }
 

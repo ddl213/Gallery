@@ -3,7 +3,6 @@ package com.example.pagergallery.repository
 import android.content.Context
 import android.graphics.Color
 import android.os.Build
-import androidx.compose.runtime.mutableStateOf
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -17,6 +16,7 @@ import com.example.pagergallery.repository.api.PixabayService
 import com.example.pagergallery.repository.local.GalleryDatabase
 import com.example.pagergallery.repository.local.tables.cache.CacheDaoUtil
 import com.example.pagergallery.repository.local.tables.collection.CollectionDaoUtil
+import com.example.pagergallery.repository.local.tables.download.DownLoadDaoUtil
 import com.example.pagergallery.repository.local.tables.query.QueryDaoUtil
 import com.example.pagergallery.repository.local.tables.user.User
 import com.example.pagergallery.repository.local.tables.user.UserDaoUtil
@@ -100,6 +100,10 @@ class Repository private constructor(context: Context) {
     //缓存表
     private val cacheDao by lazy { galleryDB.getCacheDao() }
     fun getCacheDaoUtil() = CacheDaoUtil(cacheDao)
+
+    //下载表
+    private val downloadDao by lazy { galleryDB.getDownLoadDao() }
+    fun getDownLoadDaoUtil() = DownLoadDaoUtil(downloadDao)
 
     //缓存表
     private val userDao by lazy { galleryDB.getUserDao() }

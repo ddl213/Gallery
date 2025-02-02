@@ -4,7 +4,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
-import com.example.pagergallery.unit.base.BaseAdapter;
+import com.example.pagergallery.unit.base.adapter.BaseAdapter;
 
 
 public interface OnItemClickListener {

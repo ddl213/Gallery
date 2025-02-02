@@ -1,4 +1,4 @@
-package com.example.pagergallery.unit.base
+package com.example.pagergallery.unit.base.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater

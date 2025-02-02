@@ -2,18 +2,16 @@ package com.example.pagergallery.fragment.home.query
 
 import android.view.View
 import android.view.View.OnClickListener
-import androidx.compose.runtime.mutableStateOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.pagergallery.R
 import com.example.pagergallery.databinding.FragmentShowQueryBinding
-import com.example.pagergallery.unit.base.BaseBindFragment
+import com.example.pagergallery.unit.base.fragment.BaseBindFragment
 import com.example.pagergallery.fragment.home.GalleryFragment
 import com.example.pagergallery.fragment.home.GalleryViewModel
 import com.example.pagergallery.fragment.home.list_type
-import com.example.pagergallery.unit.enmu.ImageTypeEnum
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayoutMediator

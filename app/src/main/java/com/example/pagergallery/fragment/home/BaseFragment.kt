@@ -9,7 +9,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.pagergallery.R
 import com.example.pagergallery.databinding.FragmentBaseBinding
-import com.example.pagergallery.unit.base.BaseBindFragment
+import com.example.pagergallery.unit.base.fragment.BaseBindFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayoutMediator

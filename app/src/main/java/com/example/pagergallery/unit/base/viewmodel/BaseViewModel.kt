@@ -1,4 +1,4 @@
-package com.example.pagergallery.unit.base
+package com.example.pagergallery.unit.base.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.ViewModel

@@ -13,10 +13,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.pagergallery.R
 import com.example.pagergallery.databinding.FragmentQueryBinding
-import com.example.pagergallery.unit.base.BaseBindFragment
+import com.example.pagergallery.unit.base.fragment.BaseBindFragment
 import com.example.pagergallery.repository.local.tables.query.HistoryQuery
 import com.example.pagergallery.unit.logD
-import com.example.pagergallery.unit.shortToast
 import com.example.pagergallery.unit.showSoftInput
 import com.example.pagergallery.unit.view.ExpandableFlowLayout
 import kotlinx.coroutines.launch

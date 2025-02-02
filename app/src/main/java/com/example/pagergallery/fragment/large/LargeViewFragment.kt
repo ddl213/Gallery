@@ -5,7 +5,6 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.graphics.Color
 import android.os.Build
-import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import androidx.core.view.WindowCompat
@@ -15,7 +14,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
-import com.example.pagergallery.MainActivity
 import com.example.pagergallery.R
 import com.example.pagergallery.databinding.FragmentLargeViewBinding
 import com.example.pagergallery.databinding.LargeViewCellBinding
@@ -23,8 +21,8 @@ import com.example.pagergallery.fragment.me.download.ITEM_TYPE
 import com.example.pagergallery.fragment.me.download.PHOTO_LIST
 import com.example.pagergallery.fragment.me.download.POSITION
 import com.example.pagergallery.repository.api.Item
-import com.example.pagergallery.unit.base.BaseBindFragment
-import com.example.pagergallery.unit.base.adapterOf
+import com.example.pagergallery.unit.base.adapter.adapterOf
+import com.example.pagergallery.unit.base.fragment.BaseBindFragment
 import com.example.pagergallery.unit.enmu.FragmentFromEnum
 import com.example.pagergallery.unit.launchAndRepeatLifecycle
 import com.example.pagergallery.unit.loadImage
@@ -38,6 +36,10 @@ class LargeViewFragment :
     BaseBindFragment<FragmentLargeViewBinding>(FragmentLargeViewBinding::inflate) {
 
     private val viewModel by viewModels<LargeVIewModel>()
+    private var shouldCache = false
+    private var isDownLoad = false
+    private var isVector = false
+
     private val mAdapter = adapterOf<Item, LargeViewCellBinding>(
         LargeViewCellBinding::class.java,
     ) { holder, _, item ->
@@ -48,12 +50,13 @@ class LargeViewFragment :
 //        } else {
 //            holder.itemView.context.loadImage((item as String), holder.binding.photoView)
 //        }
-        holder.itemView.context.loadImage((item)?.largeUrl, holder.binding.photoView)
+        val url = if (isDownLoad) {
+            logD("大图：${item?.localUrl}")
+            item?.localUrl
+        } else item?.largeUrl
+        holder.itemView.context.loadImage(url, holder.binding.photoView, isDownLoad)
         isVector = item?.type == "vector/svg"
     }
-    private var shouldCache = false
-    private var isDownLoad = false
-    private var isVector = false
 
     private val window by lazy { requireActivity().window }
     private val controller by lazy {

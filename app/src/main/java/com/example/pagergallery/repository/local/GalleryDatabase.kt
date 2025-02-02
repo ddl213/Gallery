@@ -7,11 +7,15 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.example.pagergallery.repository.api.Item
+import com.example.pagergallery.repository.local.tables.GalleryDaoUtils
 import com.example.pagergallery.repository.local.tables.cache.Cache
 import com.example.pagergallery.repository.local.tables.cache.CacheDao
 import com.example.pagergallery.repository.local.tables.cache.ItemConverter
 import com.example.pagergallery.repository.local.tables.collection.Collection
 import com.example.pagergallery.repository.local.tables.collection.CollectionDao
+import com.example.pagergallery.repository.local.tables.download.DownLoad
+import com.example.pagergallery.repository.local.tables.download.DownLoadDao
 import com.example.pagergallery.repository.local.tables.query.HistoryQuery
 import com.example.pagergallery.repository.local.tables.query.QueryDao
 import com.example.pagergallery.repository.local.tables.user.User
@@ -20,8 +24,8 @@ import com.example.pagergallery.unit.TABLE_COLL_NAME
 import com.example.pagergallery.unit.TABLE_QUERY_NAME
 
 @Database(
-    entities = [Collection::class, HistoryQuery::class, Cache::class, User::class],
-    version = 9,
+    entities = [Collection::class, HistoryQuery::class, Cache::class, User::class, DownLoad::class],
+    version = 10,
     exportSchema = false
 )
 @TypeConverters(ItemConverter::class)
@@ -30,11 +34,11 @@ abstract class GalleryDatabase : RoomDatabase() {
     companion object {
         private const val DB_NAME = "gallery_db"
         private var instance: GalleryDatabase? = null
-
+        private  val dao = GalleryDaoUtils<UserDao,Item>()
         fun getInstance(context: Context) =
             instance ?: synchronized(this) {
                 Room.databaseBuilder(context, GalleryDatabase::class.java, DB_NAME)
-                    .addMigrations(MIGRATION_8_9)
+                    .addMigrations(MIGRATION_9_10)
                     .build().also { instance = it }
             }
 
@@ -115,11 +119,23 @@ abstract class GalleryDatabase : RoomDatabase() {
                 db.execSQL("ALTER TABLE collection ADD time INTEGER NOT NULL")
             }
         }
+        private val MIGRATION_9_10 = object : Migration(9,10) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "CREATE TABLE 'table_download' (" +
+                            "id INTEGER NOT NULL PRIMARY KEY," +
+                            "item TEXT NOT NULL," +
+                            "time INTEGER NOT NULL," +
+                            "user_id INTEGER NOT NULL )"
+                )
+            }
+        }
     }
 
     abstract fun getCollectionDao(): CollectionDao
     abstract fun getQueryDao(): QueryDao
     abstract fun getCacheDao(): CacheDao
+    abstract fun getDownLoadDao(): DownLoadDao
     abstract fun getUserDao(): UserDao
 
 }

@@ -43,7 +43,8 @@ data class Item(
     @SerializedName("user_id") var userId : Int,
     @SerializedName("user") var userName : String,
     @SerializedName("userImageURL") var userImage : String,
+    @Ignore var localUrl : String,
     @Ignore var isCollected : Boolean
 ):Parcelable{
-    constructor() : this(0,"","",0,0,"","",0,"","",false)
+    constructor() : this(0,"","",0,0,"","",0,"","","",false)
 }

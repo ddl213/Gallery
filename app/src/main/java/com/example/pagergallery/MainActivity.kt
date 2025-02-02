@@ -1,7 +1,6 @@
 package com.example.pagergallery
 
 import android.os.Bundle
-import android.view.MotionEvent
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -14,8 +13,8 @@ import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import com.example.pagergallery.databinding.ActivityMainBinding
 import com.example.pagergallery.repository.Repository
-import com.example.pagergallery.unit.base.BaseViewModel
-import com.example.pagergallery.unit.base.MyViewModelFactory
+import com.example.pagergallery.unit.base.viewmodel.BaseViewModel
+import com.example.pagergallery.unit.base.viewmodel.MyViewModelFactory
 import com.example.pagergallery.unit.logD
 import com.example.pagergallery.unit.view.AppBarCompose
 import com.example.pagergallery.unit.view.BottomItem

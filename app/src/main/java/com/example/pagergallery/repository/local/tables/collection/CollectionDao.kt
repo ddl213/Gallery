@@ -6,10 +6,11 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.pagergallery.unit.TABLE_COLL_NAME
+import com.example.pagergallery.unit.base.dao.BaseDao
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface CollectionDao {
+interface CollectionDao : BaseDao<Collection>{
 
     @Query("SELECT * FROM $TABLE_COLL_NAME WHERE user_id = :uid ORDER BY time DESC")
     fun getAllCollections(uid : Int) : Flow<List<Collection>>
@@ -20,9 +21,6 @@ interface CollectionDao {
 
     @Query("DELETE FROM $TABLE_COLL_NAME")
     suspend fun deleteAllCollections()
-
-    @Delete
-    suspend fun deleteColl(collection: Collection)
 
     @Query("DELETE FROM $TABLE_COLL_NAME WHERE id = :id and user_id = :uid")
     suspend fun deleteColl(id: Long,uid: Int)

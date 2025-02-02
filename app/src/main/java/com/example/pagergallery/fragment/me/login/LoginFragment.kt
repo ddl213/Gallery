@@ -10,12 +10,14 @@ import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.pagergallery.R
 import com.example.pagergallery.unit.enmu.LoginNavigateTo
 import com.example.pagergallery.unit.launchAndRepeatLifecycle
 import com.example.pagergallery.unit.shortToast
 import com.example.pagergallery.unit.view.LoginCompose
+import kotlinx.coroutines.launch
 
 const val NAVIGATE_TO = "navigate"
 
@@ -45,8 +47,8 @@ class LoginFragment : Fragment() {
                     requireContext().shortToast("账号密码不能为空")
                     return
                 }
-                launchAndRepeatLifecycle(Lifecycle.State.RESUMED) {
-                    if (account.isDigitsOnly()) {
+                if (account.isDigitsOnly()) {
+                    lifecycleScope.launch {
                         val success = viewModel.login(account.toLong(), pwd)
                         if (success) {
                             requireContext().shortToast("登录成功").show()
@@ -54,10 +56,11 @@ class LoginFragment : Fragment() {
                         } else {
                             requireContext().shortToast("登录失败").show()
                         }
-                    } else {
-                        requireContext().shortToast("账号只有数字组成，请重新输入").show()
                     }
+                } else {
+                    requireContext().shortToast("账号只有数字组成，请重新输入").show()
                 }
+
             }
 
             LoginNavigateTo.Register, LoginNavigateTo.Reset -> {

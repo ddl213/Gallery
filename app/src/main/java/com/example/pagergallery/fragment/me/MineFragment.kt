@@ -16,7 +16,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.pagergallery.R
 import com.example.pagergallery.databinding.FragmentMeBinding
 import com.example.pagergallery.repository.local.tables.user.User
-import com.example.pagergallery.unit.base.BaseBindFragment
+import com.example.pagergallery.unit.base.fragment.BaseBindFragment
 import com.example.pagergallery.unit.enmu.FragmentFromEnum
 import com.example.pagergallery.unit.launchAndRepeatLifecycle
 import com.example.pagergallery.unit.logD
