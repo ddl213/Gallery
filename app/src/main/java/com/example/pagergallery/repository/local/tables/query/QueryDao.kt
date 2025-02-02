@@ -8,12 +8,10 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.pagergallery.unit.TABLE_QUERY_NAME
+import com.example.pagergallery.unit.base.dao.BaseDao
 
 @Dao
-interface QueryDao {
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertQuery(item : HistoryQuery)
+interface QueryDao : BaseDao<HistoryQuery>{
 
     @Query("DELETE FROM $TABLE_QUERY_NAME")
     suspend fun deleteAllQuery()

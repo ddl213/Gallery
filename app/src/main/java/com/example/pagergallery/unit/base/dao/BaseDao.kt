@@ -4,10 +4,13 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.RawQuery
 import androidx.room.Update
+import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface BaseDao<T> {
+interface BaseDao<T>{
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(t: T)
 
@@ -28,6 +31,9 @@ interface BaseDao<T> {
 
     @Delete
     suspend fun delete(t: T)
+
+    @Delete
+    suspend fun deleteRang(vararg query:  T)
 
     @Update
     suspend fun update(t: T)

@@ -7,8 +7,6 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.example.pagergallery.repository.api.Item
-import com.example.pagergallery.repository.local.tables.GalleryDaoUtils
 import com.example.pagergallery.repository.local.tables.cache.Cache
 import com.example.pagergallery.repository.local.tables.cache.CacheDao
 import com.example.pagergallery.repository.local.tables.cache.ItemConverter
@@ -34,7 +32,6 @@ abstract class GalleryDatabase : RoomDatabase() {
     companion object {
         private const val DB_NAME = "gallery_db"
         private var instance: GalleryDatabase? = null
-        private  val dao = GalleryDaoUtils<UserDao,Item>()
         fun getInstance(context: Context) =
             instance ?: synchronized(this) {
                 Room.databaseBuilder(context, GalleryDatabase::class.java, DB_NAME)
@@ -99,7 +96,7 @@ abstract class GalleryDatabase : RoomDatabase() {
                 )
             }
         }
-        private val MIGRATION_7_8 = object : Migration(7,8) {
+        private val MIGRATION_7_8 = object : Migration(7, 8) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("DROP TABLE table_cache")
                 db.execSQL(
@@ -110,7 +107,7 @@ abstract class GalleryDatabase : RoomDatabase() {
                 )
             }
         }
-        private val MIGRATION_8_9 = object : Migration(8,9) {
+        private val MIGRATION_8_9 = object : Migration(8, 9) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("DELETE FROM table_cache")
                 db.execSQL("DELETE FROM collection")
@@ -119,7 +116,7 @@ abstract class GalleryDatabase : RoomDatabase() {
                 db.execSQL("ALTER TABLE collection ADD time INTEGER NOT NULL")
             }
         }
-        private val MIGRATION_9_10 = object : Migration(9,10) {
+        private val MIGRATION_9_10 = object : Migration(9, 10) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL(
                     "CREATE TABLE 'table_download' (" +

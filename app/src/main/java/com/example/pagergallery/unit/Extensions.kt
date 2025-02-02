@@ -46,16 +46,18 @@ import java.util.Locale
 //加载图片
 fun Context.loadImage(url: String?, view: ImageView, isDownLoad: Boolean) {
 
-    val u = if (isDownLoad) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            Uri.parse(url ?: "")
-        } else {
-            File(url ?: "")
-        }
-    } else url
+//    val u = if (isDownLoad) {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+//            Uri.parse(url ?: "")
+//        } else {
+//            logD("")
+//            url
+//        }
+//        url
+//    } else url
 
     Glide.with(this)
-        .load(u)
+        .load(url)
         .placeholder(R.drawable.gray)
         .listener(object : RequestListener<Drawable> {
             override fun onLoadFailed(
@@ -80,7 +82,7 @@ fun Context.loadImage(url: String?, view: ImageView, isDownLoad: Boolean) {
         })
         .thumbnail(
             Glide.with(this)
-                .load(u)
+                .load(url)
                 .sizeMultiplier(0.1f) // 加载原图的 10% 作为缩略图
         )
         .diskCacheStrategy(DiskCacheStrategy.ALL)

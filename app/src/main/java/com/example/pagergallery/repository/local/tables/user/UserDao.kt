@@ -7,20 +7,15 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.pagergallery.unit.TABLE_USER
+import com.example.pagergallery.unit.base.dao.BaseDao
 
 @Dao
-interface UserDao {
+interface UserDao : BaseDao<User>{
 
-    @Insert(onConflict =  OnConflictStrategy.ABORT)
-    suspend fun addUser(user: User) : Long
 
-    @Delete
-    suspend fun deleteUser(user: User) : Int
     @Query("DELETE FROM $TABLE_USER WHERE account = :account")
     suspend fun deleteUserByAccount(account : Long) : Int
 
-    @Update
-    suspend fun updateUser(user: User) : Int
     @Query("UPDATE $TABLE_USER SET name = :name WHERE account = :account")
     suspend fun updateUserName(name : String,account : Long) : Int
     @Query("UPDATE $TABLE_USER SET phone = :phone WHERE account = :account")

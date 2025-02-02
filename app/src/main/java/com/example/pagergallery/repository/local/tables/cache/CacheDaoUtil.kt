@@ -16,7 +16,7 @@ class CacheDaoUtil(private val cacheDao: CacheDao) {
     }
 
     suspend fun deleteAll() {
-        cacheDao.clearCaches()
+        cacheDao.deleteAll()
 
     }
 

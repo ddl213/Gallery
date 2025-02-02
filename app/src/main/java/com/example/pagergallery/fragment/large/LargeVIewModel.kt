@@ -3,7 +3,6 @@ package com.example.pagergallery.fragment.large
 import android.app.Application
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.os.Build
 import androidx.compose.runtime.mutableStateOf
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AndroidViewModel
@@ -17,13 +16,10 @@ import com.example.pagergallery.repository.Repository
 import com.example.pagergallery.repository.api.Item
 import com.example.pagergallery.repository.local.tables.cache.Cache
 import com.example.pagergallery.repository.local.tables.collection.Collection
-import com.example.pagergallery.repository.local.tables.collection.CollectionDaoUtil
 import com.example.pagergallery.repository.local.tables.download.DownLoad
 import com.example.pagergallery.unit.isNetWorkAvailable
 import com.example.pagergallery.unit.logD
-import com.example.pagergallery.unit.manager.DownloadManager
 import com.example.pagergallery.unit.saveImage
-import com.example.pagergallery.unit.saveImageQ
 import com.example.pagergallery.unit.shortToast
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
@@ -35,7 +31,7 @@ import kotlinx.coroutines.withContext
 
 class LargeVIewModel(application: Application) : AndroidViewModel(application) {
     private val repository = Repository.getInstance(getApplication())
-    private val collectionDaoUtil: CollectionDaoUtil get() = repository.getCollectionDaoUtil()
+    private val collectionDaoUtil = repository.getCollectionDaoUtil()
     private val _collectState = MutableStateFlow(false)
     val collectState: StateFlow<Boolean> get() = _collectState
     fun setCollectState(state: Boolean) {
@@ -55,7 +51,7 @@ class LargeVIewModel(application: Application) : AndroidViewModel(application) {
         val uid = repository.user.value?.id ?: return
         viewModelScope.launch {
             photoListLiveData.value!![pos].apply {
-                cacheDaoUtil.insertItemList(Cache(this.id, this, System.currentTimeMillis(), uid))
+                cacheDaoUtil.insert(Cache(this.id, this, System.currentTimeMillis(), uid))
             }
         }
     }
@@ -160,7 +156,7 @@ class LargeVIewModel(application: Application) : AndroidViewModel(application) {
 
     //添加收藏
     private suspend fun addColl(item: Item, uid: Int) {
-        collectionDaoUtil.insertCollections(
+        collectionDaoUtil.insertAllIgnore(
             Collection(
                 item.id,
                 Gson().toJson(item),
@@ -210,7 +206,7 @@ class LargeVIewModel(application: Application) : AndroidViewModel(application) {
 //                                resource.saveImage(this@saveImage, account)
 //                            }
                             val url = resource.saveImage(this@saveImage, account)
-                            if (!url.isNullOrEmpty()){
+                            if (!url.isNullOrEmpty()) {
                                 item.localUrl = url
                             }
                             logD("保存到数据库： ${item.localUrl}")

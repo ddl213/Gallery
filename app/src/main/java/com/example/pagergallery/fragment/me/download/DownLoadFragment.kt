@@ -30,6 +30,7 @@ class DownLoadFragment :
     private val viewModel by viewModels<DownLoadViewModel>()
     private val fromPage by lazy { getViewAt() }
     private var isDownLoad = false
+
     private val mAdapter = adapterOf<Item, ImageCellBinding>(
         ImageCellBinding::class.java
     ) { h, _, item ->

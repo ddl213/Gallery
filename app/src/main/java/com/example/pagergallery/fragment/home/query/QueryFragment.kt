@@ -9,16 +9,13 @@ import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.pagergallery.R
 import com.example.pagergallery.databinding.FragmentQueryBinding
-import com.example.pagergallery.unit.base.fragment.BaseBindFragment
 import com.example.pagergallery.repository.local.tables.query.HistoryQuery
-import com.example.pagergallery.unit.logD
+import com.example.pagergallery.unit.base.fragment.BaseBindFragment
 import com.example.pagergallery.unit.showSoftInput
 import com.example.pagergallery.unit.view.ExpandableFlowLayout
-import kotlinx.coroutines.launch
 
 class QueryFragment : BaseBindFragment<FragmentQueryBinding>(FragmentQueryBinding::inflate),
     OnClickListener, OnEditorActionListener {
@@ -30,10 +27,10 @@ class QueryFragment : BaseBindFragment<FragmentQueryBinding>(FragmentQueryBindin
         binding.apply {
             expandView.setOnClickListener(object : ExpandableFlowLayout.OnClickListener {
                 override fun click(index: Int, content: String) {
-                    if (isDelete){
+                    if (isDelete) {
                         viewModel.setDelete(index)
-                    }else {
-                        lifecycleScope.launch { viewModel.updateDateByStr(index) }
+                    } else {
+                        viewModel.updateDateByStr(index)
                         navigateWithArgs(content)
                     }
                 }
@@ -42,7 +39,7 @@ class QueryFragment : BaseBindFragment<FragmentQueryBinding>(FragmentQueryBindin
     }
 
     override fun initData() {
-        viewModel.queryListLiveData.observe(viewLifecycleOwner,dataObserver)
+        viewModel.queryListLiveData.observe(viewLifecycleOwner, dataObserver)
     }
 
     override fun initEvent() {
@@ -54,15 +51,11 @@ class QueryFragment : BaseBindFragment<FragmentQueryBinding>(FragmentQueryBindin
         binding.layoutSearch.etSearch.setOnEditorActionListener(this@QueryFragment)
     }
 
-    private val dataObserver = Observer<List<HistoryQuery>?>{list ->
+    private val dataObserver = Observer<List<HistoryQuery>?> { list ->
         viewModel.setListItems(list)
-        list?.forEach { item ->
-            logD("${item.id} -- ${item.queryStr} -- ${item.time}")
-        }
         list?.map {
             it.queryStr
         }.also { binding.expandView.setData(it ?: listOf()) }
-
     }
 
 
@@ -86,7 +79,7 @@ class QueryFragment : BaseBindFragment<FragmentQueryBinding>(FragmentQueryBindin
     //点击查询
     private fun search() {
         binding.layoutSearch.etSearch.text.toString().trim().apply text@{
-            lifecycleScope.launch { viewModel.insertQuery(this@text) }
+            viewModel.insertQuery(this@text)
             navigateWithArgs(this)
         }
     }
@@ -111,7 +104,7 @@ class QueryFragment : BaseBindFragment<FragmentQueryBinding>(FragmentQueryBindin
 
             R.id.imgDelete -> {
                 isDelete = !isDelete
-                if (!isDelete) lifecycleScope.launch { viewModel.deleteQuery() }
+                if (!isDelete) viewModel.deleteQuery()
                 binding.expandView.delete()
             }
         }
@@ -121,6 +114,11 @@ class QueryFragment : BaseBindFragment<FragmentQueryBinding>(FragmentQueryBindin
     private fun showSoftInput() {
         binding.layoutSearch.etSearch.requestFocus()
         requireContext().showSoftInput(binding.layoutSearch.etSearch)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        viewModel.deleteQuery()
     }
 
     override fun onDestroy() {

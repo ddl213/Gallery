@@ -1,9 +1,6 @@
 package com.example.pagergallery.repository.local.tables.collection
 
 import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.pagergallery.unit.TABLE_COLL_NAME
 import com.example.pagergallery.unit.base.dao.BaseDao
@@ -18,14 +15,10 @@ interface CollectionDao : BaseDao<Collection>{
     @Query("SELECT EXISTS(SELECT * FROM $TABLE_COLL_NAME WHERE id = :id)")
     suspend fun isCollection(id : Long) : Boolean
 
-
     @Query("DELETE FROM $TABLE_COLL_NAME")
     suspend fun deleteAllCollections()
 
     @Query("DELETE FROM $TABLE_COLL_NAME WHERE id = :id and user_id = :uid")
-    suspend fun deleteColl(id: Long,uid: Int)
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertColl(vararg items : Collection)
+    suspend fun deleteCollById(id: Long, uid: Int)
 
 }

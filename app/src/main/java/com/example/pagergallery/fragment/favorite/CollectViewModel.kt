@@ -21,7 +21,8 @@ class CollectViewModel(application: Application) : AndroidViewModel(application)
     fun getCollect(){
         val uid = repository.user.value?.id ?: return
         viewModelScope.launch {
-            collectDaoUtil.getAllCollection(uid)
+            collectDaoUtil.getAllCollections(uid)
+            //collectDaoUtil.getAllCollection(uid)
                 .flowOn(Dispatchers.IO)
                 .collect { list ->
                     list.map {item ->
@@ -35,7 +36,7 @@ class CollectViewModel(application: Application) : AndroidViewModel(application)
 
     fun clear(){
         viewModelScope.launch {
-            collectDaoUtil.deleteAll()
+            collectDaoUtil.deleteAllCollections()
         }
     }
 

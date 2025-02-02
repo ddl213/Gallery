@@ -1,8 +1,11 @@
 package com.example.pagergallery.fragment.me.login
 
 import android.app.Application
+import android.database.sqlite.SQLiteConstraintException
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import com.example.pagergallery.repository.Repository
+import com.example.pagergallery.repository.local.tables.user.User
 import com.example.pagergallery.unit.enmu.LoginNavigateTo
 import kotlin.random.Random
 
@@ -24,7 +27,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     //注册
-    suspend fun register(pwd: String, phone: Long): Long? {
+    suspend fun register(pwd: String, phone: Long): Long {
         var random = -1L
         while (random == -1L) {
             Random.nextLong(100000, 1000000000).apply {
@@ -33,10 +36,19 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                 }
             }
         }
-        userDaoUtil.register(random, phone, pwd).also {
-            return if (it != null) {
-                random
-            } else null
+        return try {
+            userDaoUtil.insertAbort(
+                User(
+                    null,
+                    account = random,
+                    name = "用户:$random",
+                    pwd = pwd,
+                    phone = phone
+                )
+            )
+            random
+        }catch (e : SQLiteConstraintException){
+            -1L
         }
     }
 

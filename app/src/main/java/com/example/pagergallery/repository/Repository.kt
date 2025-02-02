@@ -14,12 +14,7 @@ import com.example.pagergallery.repository.api.Item
 import com.example.pagergallery.repository.api.PagingDataSource
 import com.example.pagergallery.repository.api.PixabayService
 import com.example.pagergallery.repository.local.GalleryDatabase
-import com.example.pagergallery.repository.local.tables.cache.CacheDaoUtil
-import com.example.pagergallery.repository.local.tables.collection.CollectionDaoUtil
-import com.example.pagergallery.repository.local.tables.download.DownLoadDaoUtil
-import com.example.pagergallery.repository.local.tables.query.QueryDaoUtil
 import com.example.pagergallery.repository.local.tables.user.User
-import com.example.pagergallery.repository.local.tables.user.UserDaoUtil
 import com.example.pagergallery.unit.KeyValueUtils
 import com.example.pagergallery.unit.enmu.ImageTypeEnum
 import com.example.pagergallery.unit.logD
@@ -91,23 +86,23 @@ class Repository private constructor(context: Context) {
 
     //收藏表
     private val collDao by lazy { galleryDB.getCollectionDao() }
-    fun getCollectionDaoUtil() = CollectionDaoUtil(collDao)
+    fun getCollectionDaoUtil() = collDao
 
     //查询表
     private val queryDao by lazy { galleryDB.getQueryDao() }
-    fun getQueryDaoUtil() = QueryDaoUtil(queryDao)
+    fun getQueryDaoUtil() = queryDao
 
     //缓存表
     private val cacheDao by lazy { galleryDB.getCacheDao() }
-    fun getCacheDaoUtil() = CacheDaoUtil(cacheDao)
+    fun getCacheDaoUtil() = cacheDao
 
     //下载表
     private val downloadDao by lazy { galleryDB.getDownLoadDao() }
-    fun getDownLoadDaoUtil() = DownLoadDaoUtil(downloadDao)
+    fun getDownLoadDaoUtil() = downloadDao
 
     //缓存表
     private val userDao by lazy { galleryDB.getUserDao() }
-    fun getUserDaoUtil() = UserDaoUtil(userDao)
+    fun getUserDaoUtil() = userDao
 
     private val service by lazy { PixabayService().createPixabayService() }
     private val _galleryListLiveDate = MutableLiveData<MutableMap<String, List<Item>>>()

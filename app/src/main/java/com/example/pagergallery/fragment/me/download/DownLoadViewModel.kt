@@ -128,7 +128,7 @@ class DownLoadViewModel(application: Application) : AndroidViewModel(application
     fun getCollect() {
         val uid = repository.user.value?.id ?: return
         viewModelScope.launch {
-            collectDaoUtil.getAllCollection(uid)
+            collectDaoUtil.getAllCollections(uid)
                 .flowOn(Dispatchers.IO)
                 .collect { list ->
                     list.map { item ->

@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface CacheDao : BaseDao<Cache>{
     @Query("DELETE FROM $TABLE_CACHE")
-    suspend fun clearCaches()
+    suspend fun deleteAll()
 
     @Query("SELECT * FROM $TABLE_CACHE WHERE user_id = :uid ORDER BY time DESC")
     fun getCaches(uid : Int) : Flow<List<Cache>>
