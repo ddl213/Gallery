@@ -2,9 +2,6 @@ package com.example.pagergallery.repository.local.tables.query
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.pagergallery.unit.TABLE_QUERY_NAME
@@ -16,8 +13,8 @@ interface QueryDao : BaseDao<HistoryQuery>{
     @Query("DELETE FROM $TABLE_QUERY_NAME")
     suspend fun deleteAllQuery()
 
-    @Delete
-    suspend fun deleteQuery(vararg query: HistoryQuery)
+    @Query("DELETE FROM $TABLE_QUERY_NAME WHERE id IN (:id)")
+    suspend fun deleteQuery(id: Array<Int>)
 
     @Update
     suspend fun updateDateByStr(query: HistoryQuery)

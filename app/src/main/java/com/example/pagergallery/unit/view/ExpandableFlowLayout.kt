@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatImageView
 import com.example.pagergallery.R
+import com.example.pagergallery.repository.local.tables.query.HistoryQuery
 import com.example.pagergallery.unit.logD
 
 class ExpandableFlowLayout : ViewGroup {
@@ -194,12 +195,12 @@ class ExpandableFlowLayout : ViewGroup {
         }
     }
 
-    fun setData(data: List<String>) {
+    fun setData(data: List<HistoryQuery>) {
         removeAllViews()
         if (data.isEmpty()) return
 
-        for (content in data) {
-            addView(initTextView(content))
+        for (item in data) {
+            addView(initTextView(item.queryStr))
         }
         addView(expandView)
     }
@@ -236,7 +237,7 @@ class ExpandableFlowLayout : ViewGroup {
         requestLayout()
     }
 
-    //监听textview是否点击
+    /**监听textview是否点击*/
     interface OnClickListener {
         fun click(index: Int, content: String)
     }

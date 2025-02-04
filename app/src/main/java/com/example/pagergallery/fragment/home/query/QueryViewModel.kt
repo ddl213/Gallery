@@ -11,23 +11,41 @@ import kotlinx.coroutines.launch
 
 class QueryViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = Repository.getInstance(getApplication())
-    private val _queryListLiveData = MutableLiveData<List<HistoryQuery>>()
     private val queryDaoUtil = repository.getQueryDaoUtil()
 
-    private val listDelete = mutableListOf<HistoryQuery>()
+    private val _queryListLiveData = MutableLiveData<MutableList<HistoryQuery>>()
+    private val listDelete = mutableListOf<Int>()
 
-    //记录查询字段
+    /**设置和删除查询项*/
+    fun setQueryList(list: List<HistoryQuery>){
+        _queryListLiveData.value = list.toMutableList()
+    }
+
+    fun setDelete(index: Int) {
+        _queryListLiveData.value?.get(index)?.id.let { listDelete.add(it ?: -1) }
+        _queryListLiveData.value?.removeAt(index)
+    }
+
+    //记录搜索字段
     fun setQuery(str: String) {
         repository.setQuery(str)
     }
 
+    fun getQuery() :String?{
+        return repository.getQuery()
+    }
+
     //增删改查
-    val queryListLiveData: LiveData<List<HistoryQuery>> get() = queryDaoUtil.getAllQuery()
+    fun insertQuery(query: String) {
+        viewModelScope.launch {
+            queryDaoUtil.insert(HistoryQuery(null, query, System.currentTimeMillis()))
+        }
+    }
 
     fun deleteQuery() {
         if (listDelete.isEmpty()) return
         viewModelScope.launch {
-            queryDaoUtil.deleteRang(*listDelete.toTypedArray())
+            queryDaoUtil.deleteQuery(listDelete.toTypedArray())
         }
         listDelete.clear()
     }
@@ -38,62 +56,17 @@ class QueryViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun insertQuery(query: String) {
-        viewModelScope.launch {
-            queryDaoUtil.insert(HistoryQuery(null, query, System.currentTimeMillis()))
-        }
-    }
-
     fun updateDateByStr(index: Int) {
+        val historyQuery = _queryListLiveData.value?.get(index) ?: return
         viewModelScope.launch {
-            queryDaoUtil.updateDateByStr(
-                HistoryQuery(
-                    _queryListLiveData.value?.get(index)?.id,
-                    _queryListLiveData.value?.get(index)?.queryStr ?: "",
-                    System.currentTimeMillis()
-                )
-            )
+            historyQuery.time = System.currentTimeMillis()
+            queryDaoUtil.updateDateByStr(historyQuery)
         }
     }
 
-
-//    val queryListLiveData: LiveData<List<HistoryQuery>> get() = repository.getAllQuery()
-//
-//    fun deleteQuery() {
-//        viewModelScope.launch {
-//            repository.deleteQuery(
-//                *listDelete.toTypedArray()
-////                _queryListLiveData.value?.get(index)
-////                    ?: HistoryQuery(_queryListLiveData.value?.get(index)?.id, "", 0L)
-//            )
-//        }
-//    }
-//
-//    suspend fun deleteAllQuery() {
-//        repository.deleteAllQuery()
-//    }
-//
-//    suspend fun insertQuery(query: String) {
-//        repository.insertQuery(HistoryQuery(null, query, System.currentTimeMillis()))
-//    }
-//
-//    fun updateDateByStr(index: Int) {
-//        viewModelScope.launch {
-//            repository.updateDateByStr(
-//                HistoryQuery(
-//                    _queryListLiveData.value?.get(index)?.id,
-//                    _queryListLiveData.value?.get(index)?.queryStr ?: "",
-//                    System.currentTimeMillis()
-//                )
-//            )
-//        }
-//    }
-
-    fun setListItems(list: List<HistoryQuery>?) {
-        _queryListLiveData.value = list ?: listOf()
+    fun getAllQuery() : LiveData<List<HistoryQuery>>{
+        return queryDaoUtil.getAllQuery()
     }
 
-    fun setDelete(index: Int) {
-        _queryListLiveData.value?.get(index)?.let { listDelete.add(it) }
-    }
+
 }

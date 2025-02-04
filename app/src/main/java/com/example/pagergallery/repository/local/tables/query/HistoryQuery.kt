@@ -11,6 +11,6 @@ import com.example.pagergallery.unit.TABLE_QUERY_NAME
 data class HistoryQuery(
     @PrimaryKey(autoGenerate = true) val id : Int?,
     @ColumnInfo(name = "queryStr") val queryStr : String,
-    @ColumnInfo(name = "time") val time : Long
+    @ColumnInfo(name = "time") var time : Long
 )
 

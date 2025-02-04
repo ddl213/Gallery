@@ -1,7 +1,5 @@
 package com.example.pagergallery.unit
 
-val imageTypeList = listOf("all","photo","illustration","vector")
-
 const val TABLE_COLL_NAME = "collection"
 const val TABLE_QUERY_NAME = "history_query"
 const val TABLE_CACHE = "table_cache"

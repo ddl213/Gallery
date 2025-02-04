@@ -71,7 +71,7 @@ fun RegisterCompose(
                 Spacer(modifier = Modifier.weight(1f))
                 Column(
                     modifier = Modifier
-                        .weight(5f)
+                        .weight(9f)
                         .background(Color.White.copy(0.7f))
                         .padding(40.dp)
                         .fillMaxWidth()

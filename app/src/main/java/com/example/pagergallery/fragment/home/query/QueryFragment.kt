@@ -8,11 +8,9 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.pagergallery.R
 import com.example.pagergallery.databinding.FragmentQueryBinding
-import com.example.pagergallery.repository.local.tables.query.HistoryQuery
 import com.example.pagergallery.unit.base.fragment.BaseBindFragment
 import com.example.pagergallery.unit.showSoftInput
 import com.example.pagergallery.unit.view.ExpandableFlowLayout
@@ -36,28 +34,32 @@ class QueryFragment : BaseBindFragment<FragmentQueryBinding>(FragmentQueryBindin
                 }
             })
         }
+
+        showSoftInput()
     }
 
     override fun initData() {
-        viewModel.queryListLiveData.observe(viewLifecycleOwner, dataObserver)
+        viewModel.getAllQuery().observe(viewLifecycleOwner){
+            viewModel.setQueryList(it)
+            binding.expandView.setData(it ?: listOf())
+        }
     }
 
     override fun initEvent() {
         binding.layoutSearch.tvClose.setOnClickListener(this)
-        showSoftInput()
 
         binding.imgDelete.setOnClickListener(this@QueryFragment)
         binding.layoutSearch.tvSearch.setOnClickListener(this@QueryFragment)
         binding.layoutSearch.etSearch.setOnEditorActionListener(this@QueryFragment)
     }
 
-    private val dataObserver = Observer<List<HistoryQuery>?> { list ->
-        viewModel.setListItems(list)
-        list?.map {
-            it.queryStr
-        }.also { binding.expandView.setData(it ?: listOf()) }
+    override fun onResume() {
+        super.onResume()
+        val text = viewModel.getQuery()
+        if (text.isNullOrEmpty().not()){
+            binding.layoutSearch.etSearch.setText(text)
+        }
     }
-
 
     //回车查询
     override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
@@ -122,8 +124,8 @@ class QueryFragment : BaseBindFragment<FragmentQueryBinding>(FragmentQueryBindin
     }
 
     override fun onDestroy() {
-        viewModel.queryListLiveData.removeObserver(dataObserver)
         super.onDestroy()
+        viewModel.setQuery("")
     }
 
 }

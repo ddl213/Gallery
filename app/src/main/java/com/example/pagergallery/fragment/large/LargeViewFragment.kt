@@ -43,17 +43,12 @@ class LargeViewFragment :
     private val mAdapter = adapterOf<Item, LargeViewCellBinding>(
         LargeViewCellBinding::class.java,
     ) { holder, _, item ->
-//        if (!isDownLoad) {
-//            (item as Item).apply {
-//
-//            }
-//        } else {
-//            holder.itemView.context.loadImage((item as String), holder.binding.photoView)
-//        }
         val url = if (isDownLoad) {
-            logD("大图：${item?.localUrl}")
             item?.localUrl
-        } else item?.largeUrl
+        } else {
+            item?.largeUrl
+        }
+
         holder.itemView.context.loadImage(url, holder.binding.photoView, isDownLoad)
         isVector = item?.type == "vector/svg"
     }
@@ -124,6 +119,7 @@ class LargeViewFragment :
             adapter = mAdapter
             setCurrentItem(pos, false)
             setPageTransformer(MarginPageTransformer(30))
+            setCollectState(currentItem)
         }
     }
 
@@ -154,7 +150,6 @@ class LargeViewFragment :
     }
 
     override fun initData() {
-        setCollectState(binding.viewPager2.currentItem)
     }
 
     override fun initEvent() {
@@ -174,15 +169,13 @@ class LargeViewFragment :
         initLifecycleScope()
     }
 
-//    private fun getStringList(): List<Item> {
-//        //return arguments?.getParcelableArrayList(PHOTO_LIST,Item::class.java)?.toList() ?: listOf()
-//    }
 
     @Suppress("DEPRECATION")
     private fun getItemList(): MutableList<Item> {
         val list = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
             arguments?.getParcelableArrayList(PHOTO_LIST, Item::class.java) ?: mutableListOf()
         else arguments?.getParcelableArrayList(PHOTO_LIST) ?: mutableListOf()
+
         viewModel.setListLiveData(list)
         if (list.isNotEmpty() && list[0].type == "vector/svg") {
             isVector = true

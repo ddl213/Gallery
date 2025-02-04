@@ -167,7 +167,6 @@ class Repository private constructor(context: Context) {
             return
         }
         val isDefault = queryStrLiveData.value.isNullOrEmpty()
-        logD("$isDefault")
         if (galleryListLiveDate.value.isNullOrEmpty()) {
             if (isDefault)
                 _galleryListLiveDate.value = mutableMapOf(type to list)
@@ -181,7 +180,6 @@ class Repository private constructor(context: Context) {
             } else {
                 _galleryListLiveDate.value.apply { this!![type] = this[type]!!.plus(list) }
             }
-            logD("_galleryListLiveDate:size ${_galleryListLiveDate.value!![type]?.size}")
         } else {
             if (!_galleryQueryListLiveDate.value!!.containsKey(type)) {
                 _galleryQueryListLiveDate.value!![type] = list
@@ -221,7 +219,9 @@ class Repository private constructor(context: Context) {
             queryStrLiveData.value = queryStr
     }
 
-    fun getQuery() = queryStrLiveData
+    fun getQuery() : String?{
+        return queryStrLiveData.value
+    }
 
     private val _title = MutableStateFlow("")
     val title: StateFlow<String> get() = _title

@@ -127,6 +127,26 @@ abstract class GalleryDatabase : RoomDatabase() {
                 )
             }
         }
+
+//        private val MIGRATION_10_11 = object : Migration(10, 11) {
+//            override fun migrate(db: SupportSQLiteDatabase) {
+//                // 1. 创建临时表
+////                db.execSQL("CREATE TABLE IF NOT EXISTS history_query1 (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name TEXT NOT NULL, age INTEGER, email TEXT NOT NULL DEFAULT 'unknown@example.com')")
+////
+////                // 2. 将旧表的数据复制到新表
+////                db.execSQL("INSERT INTO history_query (id, name, age, email) SELECT id, name, age, email FROM users")
+//
+//                // 3. 删除旧表
+//                db.execSQL("DROP TABLE history_query")
+//                db.execSQL("CREATE TABLE IF NOT EXISTS history_query (" +
+//                        "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+//                        "name TEXT NOT NULL, " +
+//                        "time INTEGER")
+//                // 4. 重命名新表
+//                //db.execSQL("ALTER TABLE history_query RENAME TO users")
+//
+//            }
+//        }
     }
 
     abstract fun getCollectionDao(): CollectionDao

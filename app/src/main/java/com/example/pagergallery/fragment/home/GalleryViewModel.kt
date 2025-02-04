@@ -6,26 +6,30 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.example.pagergallery.repository.Repository
+import com.example.pagergallery.repository.api.Item
 
 class GalleryViewModel(application: Application) : AndroidViewModel(application) {
     //初始化变量
     private val repository = Repository.getInstance(getApplication())
 
-    private val isFirstLoad = mutableListOf(true,true,true,true)
+    private val isFirstLoad = mutableListOf(true, true, true, true)
     private val reLoad = mutableStateOf(false)
-    val galleryListLiveData = repository.galleryListLiveDate
     val currentTab = mutableStateOf(0)
     val reLoadState = mutableStateOf(false)
     val reFresh = repository.reFresh
 
+    fun getNewItemList(type: String): List<Item>? {
+        return repository.galleryListLiveDate.value?.get(type)
+    }
 
     //获取图片
     fun getData() = repository.getPagingData().cachedIn(viewModelScope)
 
-    private fun firstLoad(){
+    private fun firstLoad() {
         isFirstLoad[currentTab.value] = false
     }
-    fun getIsFirstLoad() : Boolean{
+
+    fun getIsFirstLoad(): Boolean {
         return isFirstLoad[currentTab.value].also {
             if (it) firstLoad()
         }
@@ -35,6 +39,7 @@ class GalleryViewModel(application: Application) : AndroidViewModel(application)
     fun setImageTypeStr() {
         repository.setImageTypeStr(list_type[currentTab.value])
     }
+
     val getImageTypeStr = repository.getPicTypeStr()
 
 
@@ -42,6 +47,7 @@ class GalleryViewModel(application: Application) : AndroidViewModel(application)
     fun setQuery(queryStr: String?) {
         repository.setQuery(queryStr)
     }
+
     fun getQuery() = repository.getQuery()
 
     fun setReLoad(boolean: Boolean) {

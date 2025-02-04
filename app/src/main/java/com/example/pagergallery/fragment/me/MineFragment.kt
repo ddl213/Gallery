@@ -86,6 +86,11 @@ class MineFragment : BaseBindFragment<FragmentMeBinding>(FragmentMeBinding::infl
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        logD("当前账号的id为：${viewModel.user.value?.id}")
+    }
+
     //设置头像
     private val selectPicture: ActivityResultLauncher<Intent> = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()

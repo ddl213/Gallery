@@ -46,6 +46,12 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         MMKV.initialize(this)//78525483
         Repository.getInstance(this).initLoginState()
 
+        /**测试*/
+
+        logD("MainActivity 当前账号的id为：${Repository.getInstance(this).user.value?.id}")
+
+        /**结束测试*/
+
         //获取异步数据
         collect()
     }

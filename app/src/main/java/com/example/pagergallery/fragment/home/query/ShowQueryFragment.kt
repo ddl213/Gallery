@@ -75,7 +75,6 @@ class ShowQueryFragment : BaseBindFragment<FragmentShowQueryBinding>(FragmentSho
 
     override fun onDestroy() {
         super.onDestroy()
-        viewModel.setQuery("")
         viewModel.clearQueryList()
         viewModel.currentTab.value = currentTab
     }

@@ -34,7 +34,7 @@ class GalleryFragment(private val isQuery: Boolean, private val type: String) :
             Bundle().apply {
                 putParcelableArrayList(
                     PHOTO_LIST,
-                    ArrayList(viewModel.galleryListLiveData.value!![type]!!)
+                    ArrayList(viewModel.getNewItemList(type) ?: listOf())
                 )
                 putSerializable(ITEM_TYPE, FragmentFromEnum.Gallery)
                 putInt(POSITION, it ?: 0)
@@ -60,26 +60,13 @@ class GalleryFragment(private val isQuery: Boolean, private val type: String) :
     override fun initView() {
         if (!isQuery) {
             launchAndRepeatLifecycle {
-                if (viewModel.reLoadState.value && viewModel.galleryListLiveData.value?.containsKey(
-                        type
-                    ) == true
+                if (viewModel.reLoadState.value && viewModel.getNewItemList(type)?.isNotEmpty() == true
                 ) {
+                    //if (mAdapter.itemCount != 0) return@launchAndRepeatLifecycle
                     mAdapter.submitData(
-                        PagingData.from(
-                            viewModel.galleryListLiveData.value?.get(type) ?: listOf()
-                        )
+                        PagingData.from(viewModel.getNewItemList(type)!!)
                     )
-
-                    logD("submitData:${viewModel.galleryListLiveData.value?.get(type)?.size}${viewModel.getImageTypeStr.value}:$type")
                 }
-
-//                viewModel.reFresh.collectLatest {
-//                    if (it && type == viewModel.getImageTypeStr.value) {
-//                        logD("refresh")
-//                        binding.swipeRefreshLayout.isRefreshing = true
-//                        mAdapter.refresh()
-//                    }
-//                }
             }
         }
         concatAdapter = mAdapter.withLoadStateFooter(loadMoreAdapter)
@@ -100,8 +87,7 @@ class GalleryFragment(private val isQuery: Boolean, private val type: String) :
 
     private var isFirstLoad = true
     override fun initData() {
-        logD("initData:${viewModel.galleryListLiveData.value?.containsKey(type)}")
-        if ((viewModel.galleryListLiveData.value?.containsKey(type) != true && !isQuery) ||
+        if ((viewModel.getNewItemList(type)?.isEmpty() == true) && !isQuery ||
             (isQuery && isFirstLoad)
         ) {
             binding.swipeRefreshLayout.isRefreshing = true
