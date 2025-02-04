@@ -106,12 +106,6 @@ class LargeViewFragment :
         }
         initUI()
 
-        //recyclerView适配器
-//        mAdapter.initViewHolder { holder ->
-//            val layoutParams = ViewGroup.MarginLayoutParams(holder.binding.photoView.layoutParams)
-//            layoutParams.setMargins(10,0,10,10)
-//            holder.binding.photoView.layoutParams = layoutParams
-//        }
         mAdapter.setNewInstance(list)
 
         binding.viewPager2.apply {

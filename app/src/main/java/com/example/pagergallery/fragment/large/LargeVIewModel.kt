@@ -61,6 +61,7 @@ class LargeVIewModel(application: Application) : AndroidViewModel(application) {
     private var leftIndex = -1
     private var rightIndex = -1
     suspend fun setCollectState(pos: Int) {
+        if (repository.user.value == null) return
         if (pos in leftIndex + 5..rightIndex - 5) return
 
         if (leftIndex == -1 && rightIndex == -1) {
@@ -119,7 +120,7 @@ class LargeVIewModel(application: Application) : AndroidViewModel(application) {
     }
 
     //判断当前图片是否被收藏
-    private suspend fun isCollected(id: Long) = collectionDaoUtil.isCollection(id)
+    private suspend fun isCollected(id: Long) = collectionDaoUtil.isCollection(id,repository.user.value?.id!!)
 
     //点击收藏或移除收藏
     fun collectState(pos: Int) {
