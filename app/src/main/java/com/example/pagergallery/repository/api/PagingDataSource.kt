@@ -18,7 +18,7 @@ class PagingDataSource(
         return try {
             val page = params.key ?: 1 //获取当前的页数  如果为空则为第一页
             val data = repository.getPic(queryString,page)
-            logD("page:$page,data:${data.isNotEmpty()}")
+            //LogUtil.d("page:$page,data:${data.isNotEmpty()}")
             LoadResult.Page(
                 data,
                 if (page > 1) page - 1 else null,

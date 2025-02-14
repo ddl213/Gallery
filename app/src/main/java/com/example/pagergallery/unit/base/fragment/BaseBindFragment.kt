@@ -13,6 +13,7 @@ import com.example.pagergallery.unit.base.viewmodel.MyViewModelFactory
 abstract class BaseBindFragment<V : ViewBinding>(private val inflate: (LayoutInflater, ViewGroup?, Boolean) -> V) :
     Fragment() {
 
+    private var isRootViewInit = false
     private var _binding: V? = null//私有的binding用于获取传进来的binding
     protected val binding get() = _binding!!//只读的binding，用于暴露出去
 
@@ -34,8 +35,13 @@ abstract class BaseBindFragment<V : ViewBinding>(private val inflate: (LayoutInf
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-        initData()
         initEvent()
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initData()
     }
 
     abstract fun initView()
@@ -45,6 +51,10 @@ abstract class BaseBindFragment<V : ViewBinding>(private val inflate: (LayoutInf
     //将binding置为空,防止内存消耗
     override fun onDestroyView() {
         super.onDestroyView()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
         //置空
         _binding = null
     }

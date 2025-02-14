@@ -19,6 +19,7 @@ import com.example.pagergallery.unit.enmu.FragmentFromEnum
 import com.example.pagergallery.unit.launchAndRepeatLifecycle
 import com.example.pagergallery.unit.loadImage
 import com.example.pagergallery.unit.logD
+import com.example.pagergallery.unit.util.LogUtil
 
 class CollectionFragment :
     BaseBindFragment<FragmentCollectionBinding>(FragmentCollectionBinding::inflate) {
@@ -41,7 +42,6 @@ class CollectionFragment :
         launchAndRepeatLifecycle(Lifecycle.State.STARTED) {
             viewModel.collectListLive.collect {
                 mAdapter.setNewInstance(it.toMutableList())
-                logD(mAdapter.itemCount.toString())
             }
         }
     }

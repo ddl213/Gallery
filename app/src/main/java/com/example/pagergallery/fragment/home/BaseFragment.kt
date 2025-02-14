@@ -7,9 +7,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.adapter.FragmentViewHolder
 import com.example.pagergallery.R
 import com.example.pagergallery.databinding.FragmentBaseBinding
 import com.example.pagergallery.unit.base.fragment.BaseBindFragment
+import com.example.pagergallery.unit.util.LogUtil
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayoutMediator
@@ -29,6 +31,11 @@ class BaseFragment : BaseBindFragment<FragmentBaseBinding>(FragmentBaseBinding::
             override fun getItemCount(): Int = 4
             override fun createFragment(position: Int): Fragment {
                 return GalleryFragment(false, list_type[position])
+            }
+
+            override fun onViewDetachedFromWindow(holder: FragmentViewHolder) {
+                super.onViewDetachedFromWindow(holder)
+
             }
         }
         TabLayoutMediator(binding.tabType,binding.viewpager2) { tab, position ->
@@ -68,6 +75,11 @@ class BaseFragment : BaseBindFragment<FragmentBaseBinding>(FragmentBaseBinding::
         if (v?.id == R.id.imgSearch){
             findNavController().navigate(R.id.action_baseFragment_to_queryFragment)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        LogUtil.d("销毁onDestroy（）")
     }
 
 }

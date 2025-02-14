@@ -15,9 +15,8 @@ import com.example.pagergallery.repository.api.PagingDataSource
 import com.example.pagergallery.repository.api.PixabayService
 import com.example.pagergallery.repository.local.GalleryDatabase
 import com.example.pagergallery.repository.local.tables.user.User
-import com.example.pagergallery.unit.KeyValueUtils
+import com.example.pagergallery.unit.util.KeyValueUtils
 import com.example.pagergallery.unit.enmu.ImageTypeEnum
-import com.example.pagergallery.unit.logD
 import com.example.pagergallery.unit.view.TopBar
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers

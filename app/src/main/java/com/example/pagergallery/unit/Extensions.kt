@@ -31,6 +31,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.example.pagergallery.R
+import com.example.pagergallery.unit.util.LogUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -50,7 +51,7 @@ fun Context.loadImage(url: String?, view: ImageView, isDownLoad: Boolean) {
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
 //            Uri.parse(url ?: "")
 //        } else {
-//            logD("")
+//            LogUtil.d("")
 //            url
 //        }
 //        url
@@ -66,7 +67,7 @@ fun Context.loadImage(url: String?, view: ImageView, isDownLoad: Boolean) {
                 target: Target<Drawable>,
                 isFirstResource: Boolean
             ): Boolean {
-                logD("图片加载失败：${e}")
+                LogUtil.d("图片加载失败：${e}")
                 return false
             }
 
@@ -100,7 +101,7 @@ fun Context.loadImage(url: Bitmap?, view: ImageView) = Glide.with(this)
             target: Target<Drawable>,
             isFirstResource: Boolean
         ): Boolean {
-            logD("${e?.printStackTrace()}")
+            LogUtil.d("${e?.printStackTrace()}")
             return false
         }
 
@@ -201,7 +202,7 @@ fun Bitmap.saveImageQ(activity: Activity, account: Long): String? {
     }
     //找到下载图片的路径
     val uri: Uri? = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-    logD(uri.toString())
+    LogUtil.d(uri.toString())
     if (uri != null) {
         //判断下载是否成功
         if (saveImageToStream(contentResolver.openOutputStream(uri)) != SAVE_IMAGE_SUCCESS) {

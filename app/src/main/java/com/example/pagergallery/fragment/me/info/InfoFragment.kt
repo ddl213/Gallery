@@ -20,6 +20,7 @@ import com.example.pagergallery.unit.base.viewmodel.MyViewModelFactory
 import com.example.pagergallery.unit.enmu.InfoFromEnum
 import com.example.pagergallery.unit.logD
 import com.example.pagergallery.unit.shortToast
+import com.example.pagergallery.unit.util.LogUtil
 
 
 class InfoFragment : BaseBindFragment<FragmentMeInfoBinding>(FragmentMeInfoBinding::inflate), View.OnClickListener {
@@ -63,10 +64,10 @@ class InfoFragment : BaseBindFragment<FragmentMeInfoBinding>(FragmentMeInfoBindi
         if (it.resultCode == 0) return@registerForActivityResult
         viewModel.updatePicture(it.data?.data ?: Uri.EMPTY).apply {
             if (this != null) {
-                logD("updatePicture1:${this}")
+                LogUtil.d("updatePicture1:${this}")
                 binding.ivPhotoInfo.setImageBitmap(BitmapFactory.decodeFile(this))
             } else {
-                logD("updatePicture2:${it.data?.data}")
+                LogUtil.d("updatePicture2:${it.data?.data}")
                 requireContext().shortToast("更新失败")
             }
         }

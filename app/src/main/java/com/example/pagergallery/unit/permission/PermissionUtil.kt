@@ -12,6 +12,7 @@ import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.core.content.ContextCompat
 import com.example.pagergallery.unit.logD
 import com.example.pagergallery.unit.shortToast
+import com.example.pagergallery.unit.util.LogUtil
 
 class PermissionUtil constructor(val context: Context, val function : () -> Unit,
      private val requestPermission : ActivityResultLauncher<String>
@@ -29,7 +30,7 @@ class PermissionUtil constructor(val context: Context, val function : () -> Unit
             }
 
             shouldShowRequestPermissionRationale(context as Activity,Manifest.permission.WRITE_EXTERNAL_STORAGE) -> {
-                logD("shouldShowRequestPermissionRationale: ")
+                LogUtil.d("shouldShowRequestPermissionRationale: ")
                 permissionScreenState.value = PermissionScreenState(
                     title = "Download a picture",
                     buttonText = "Grant permission",
@@ -38,7 +39,7 @@ class PermissionUtil constructor(val context: Context, val function : () -> Unit
             }
 
             else -> {
-                logD("requestPermission.launch: ")
+                LogUtil.d("requestPermission.launch: ")
                 requestPermission.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             }
         }

@@ -1,7 +1,7 @@
 package com.example.pagergallery.unit.manager
 
 import com.example.pagergallery.repository.api.Item
-import com.example.pagergallery.unit.KeyValueUtils
+import com.example.pagergallery.unit.util.KeyValueUtils
 
 object DownloadManager {
     const val DOWNLOAD_ITEM = "download_item"

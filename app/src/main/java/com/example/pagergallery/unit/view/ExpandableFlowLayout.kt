@@ -14,6 +14,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import com.example.pagergallery.R
 import com.example.pagergallery.repository.local.tables.query.HistoryQuery
 import com.example.pagergallery.unit.logD
+import com.example.pagergallery.unit.util.LogUtil
 
 class ExpandableFlowLayout : ViewGroup {
 
@@ -104,18 +105,18 @@ class ExpandableFlowLayout : ViewGroup {
                     useHeight += childUsedHeight
                 }
                 useWidth += childUsedWidth
-//                logD("child${index}: ${child.text}")
-//                logD("${rowCount}--${index}--${childCount - 2}--${useWidth+expandView.measuredWidth}--${rootWidth}")
+//                LogUtil.d("child${index}: ${child.text}")
+//                LogUtil.d("${rowCount}--${index}--${childCount - 2}--${useWidth+expandView.measuredWidth}--${rootWidth}")
                 if (index == childCount - 2 && isExpanding && rowCount > defaultShowRow) {
-                    logD("展开")
+                    LogUtil.d("展开")
                     if (useWidth + expandView.measuredWidth > rootWidth) {
-                        logD("展开")
+                        LogUtil.d("展开")
                         useHeight += childUsedHeight
                     }
                 }
             }
         }
-        logD("${rowCount}--${childCount - 2}--${useWidth + expandView.measuredWidth}--${rootWidth}")
+        LogUtil.d("${rowCount}--${childCount - 2}--${useWidth + expandView.measuredWidth}--${rootWidth}")
 
         expandable = rowCount > defaultShowRow
         setMeasuredDimension(rootWidth, useHeight)
@@ -171,7 +172,7 @@ class ExpandableFlowLayout : ViewGroup {
             }
         }
         if (expandable) {
-            logD("expandable：${posX}--${posY}--${expandView.measuredWidth}--${expandView.measuredHeight}")
+            LogUtil.d("expandable：${posX}--${posY}--${expandView.measuredWidth}--${expandView.measuredHeight}")
             expandView.layout(
                 posX,
                 posY,

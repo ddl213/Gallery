@@ -1,6 +1,8 @@
 package com.example.pagergallery.fragment.home
 
 import android.app.Application
+import android.os.Bundle
+import android.os.Parcelable
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,6 +19,9 @@ class GalleryViewModel(application: Application) : AndroidViewModel(application)
     val currentTab = mutableStateOf(0)
     val reLoadState = mutableStateOf(false)
     val reFresh = repository.reFresh
+    val scrollPositionBundle = mutableStateOf<Bundle?>(null)
+
+    val recyclerViewState = mutableStateOf<Parcelable?>(null)
 
     fun getNewItemList(type: String): List<Item>? {
         return repository.galleryListLiveDate.value?.get(type)

@@ -12,6 +12,7 @@ import com.example.pagergallery.unit.base.viewmodel.MyViewModelFactory
 import com.example.pagergallery.unit.enmu.InfoFromEnum
 import com.example.pagergallery.unit.logD
 import com.example.pagergallery.unit.shortToast
+import com.example.pagergallery.unit.util.LogUtil
 
 class ResetInfoFragment :
     BaseBindFragment<FragmentInfoResetBinding>(FragmentInfoResetBinding::inflate) {
@@ -37,7 +38,6 @@ class ResetInfoFragment :
             arguments?.getSerializable("from") as InfoFromEnum? == InfoFromEnum.Name
         }
 
-        logD("onViewCreated: $isName")
         binding.editTextWithClear.isMultiLine(false)
 
         if (!isName) { binding.editTextWithClear.setMaxLength(11) }

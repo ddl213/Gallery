@@ -1,10 +1,8 @@
-package com.example.pagergallery.unit
+package com.example.pagergallery.unit.util
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.ColorMatrix
-import android.graphics.ColorMatrixColorFilter
 import android.renderscript.Allocation
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur

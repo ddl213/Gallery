@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.pagergallery.R
 import com.example.pagergallery.databinding.FragmentQueryBinding
 import com.example.pagergallery.unit.base.fragment.BaseBindFragment
+import com.example.pagergallery.unit.shortToast
 import com.example.pagergallery.unit.showSoftInput
 import com.example.pagergallery.unit.view.ExpandableFlowLayout
 
@@ -81,6 +82,10 @@ class QueryFragment : BaseBindFragment<FragmentQueryBinding>(FragmentQueryBindin
     //点击查询
     private fun search() {
         binding.layoutSearch.etSearch.text.toString().trim().apply text@{
+            if (this.isEmpty()){
+                requireContext().shortToast("请输入图片描述进行搜索")
+                return
+            }
             viewModel.insertQuery(this@text)
             navigateWithArgs(this)
         }

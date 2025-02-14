@@ -21,6 +21,7 @@ import com.example.pagergallery.unit.enmu.FragmentFromEnum
 import com.example.pagergallery.unit.launchAndRepeatLifecycle
 import com.example.pagergallery.unit.logD
 import com.example.pagergallery.unit.shortToast
+import com.example.pagergallery.unit.util.LogUtil
 
 const val LARGE_VIEW_FROM = "large_view_from"
 class MineFragment : BaseBindFragment<FragmentMeBinding>(FragmentMeBinding::inflate),
@@ -46,12 +47,12 @@ class MineFragment : BaseBindFragment<FragmentMeBinding>(FragmentMeBinding::infl
     private fun initInfo(user : User){
         binding.apply {
             if (user.picture.isNullOrEmpty()) {
-                logD("mineFragment:user.picture.isNullOrEmpty()")
+                LogUtil.d("mineFragment:user.picture.isNullOrEmpty()")
                 photo.setImageDrawable(
                     ResourcesCompat.getDrawable(resources, R.drawable.boy, null)
                 )
             } else {
-                logD("mineFragment:setImageBitmap")
+                LogUtil.d("mineFragment:setImageBitmap")
                 photo.setImageBitmap(BitmapFactory.decodeFile(user.picture))
             }
             tvName.text = user.name
@@ -88,7 +89,7 @@ class MineFragment : BaseBindFragment<FragmentMeBinding>(FragmentMeBinding::infl
 
     override fun onResume() {
         super.onResume()
-        logD("当前账号的id为：${viewModel.user.value?.id}")
+        LogUtil.d("当前账号的id为：${viewModel.user.value?.id}")
     }
 
     //设置头像
@@ -98,10 +99,10 @@ class MineFragment : BaseBindFragment<FragmentMeBinding>(FragmentMeBinding::infl
         if (it.resultCode == 0) return@registerForActivityResult
         viewModel.updatePicture(it.data?.data ?: Uri.EMPTY).apply {
             if (this != null) {
-                logD("mineFragment:selectPicture $this")
+                LogUtil.d("mineFragment:selectPicture $this")
                 binding.photo.setImageURI(it.data?.data)
             } else {
-                logD("mineFragment:selectPicture fail")
+                LogUtil.d("mineFragment:selectPicture fail")
                 requireContext().shortToast("更新失败")
             }
         }

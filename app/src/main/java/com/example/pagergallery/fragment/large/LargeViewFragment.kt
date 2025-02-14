@@ -28,6 +28,8 @@ import com.example.pagergallery.unit.launchAndRepeatLifecycle
 import com.example.pagergallery.unit.loadImage
 import com.example.pagergallery.unit.logD
 import com.example.pagergallery.unit.shortToast
+import com.example.pagergallery.unit.util.KeyValueUtils
+import com.example.pagergallery.unit.util.LogUtil
 import com.example.pagergallery.unit.view.BottomAppBar
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -40,6 +42,14 @@ class LargeViewFragment :
     private var isDownLoad = false
     private var isVector = false
 
+    private val window by lazy { requireActivity().window }
+    private val controller by lazy {
+        WindowCompat.getInsetsController(
+            window,
+            window.decorView
+        )
+    }
+
     private val mAdapter = adapterOf<Item, LargeViewCellBinding>(
         LargeViewCellBinding::class.java,
     ) { holder, _, item ->
@@ -51,14 +61,6 @@ class LargeViewFragment :
 
         holder.itemView.context.loadImage(url, holder.binding.photoView, isDownLoad)
         isVector = item?.type == "vector/svg"
-    }
-
-    private val window by lazy { requireActivity().window }
-    private val controller by lazy {
-        WindowCompat.getInsetsController(
-            window,
-            window.decorView
-        )
     }
 
     @Suppress("DEPRECATION")
@@ -100,7 +102,7 @@ class LargeViewFragment :
         }
 
         if (pos == -1 || list.isEmpty()) {
-            logD("$pos -- ${list.size}")
+            LogUtil.d("$pos -- ${list.size}")
             requireContext().shortToast("获取图片信息失败，请重新进入").show()
             return
         }
@@ -154,7 +156,7 @@ class LargeViewFragment :
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 setCollectState(position)
-                logD("onPageSelected:")
+                LogUtil.d("onPageSelected:")
             }
         })
 
@@ -289,6 +291,11 @@ class LargeViewFragment :
             duration = 300
             start()
         }
+    }
+
+    override fun onDestroyView() {
+        KeyValueUtils.setInt("SCROLL_POSITION",binding.viewPager2.currentItem)
+        super.onDestroyView()
     }
 
     override fun onDestroy() {

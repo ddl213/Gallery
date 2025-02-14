@@ -16,6 +16,7 @@ import com.example.pagergallery.repository.Repository
 import com.example.pagergallery.unit.base.viewmodel.BaseViewModel
 import com.example.pagergallery.unit.base.viewmodel.MyViewModelFactory
 import com.example.pagergallery.unit.logD
+import com.example.pagergallery.unit.util.LogUtil
 import com.example.pagergallery.unit.view.AppBarCompose
 import com.example.pagergallery.unit.view.BottomItem
 import com.example.pagergallery.unit.view.BottomNavigationCompose
@@ -48,8 +49,8 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
 
         /**测试*/
 
-        logD("MainActivity 当前账号的id为：${Repository.getInstance(this).user.value?.id}")
-
+        LogUtil.d("MainActivity 当前账号的id为：${Repository.getInstance(this).user.value?.id}")
+        LogUtil.d("当前账号的id为：${Repository.getInstance(this).user.value?.id}")
         /**结束测试*/
 
         //获取异步数据
@@ -88,7 +89,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         lifecycleScope.launch {
             viewModel.title.collect {
                 title.value = it
-                logD(it)
+                LogUtil.d(it)
             }
         }
     }

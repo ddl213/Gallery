@@ -21,3 +21,12 @@
 #-renamesourcefileattribute SourceFile
 
 -keep class com.example.pagergallery.**{*;}
+
+# 保留所有类名（仅调试时）
+-keepnames class * { *; }
+
+# 发布版本建议关闭日志
+-assumenosideeffects class com.example.pagergallery.unit.util.LogUtil {
+    public static *** d$*(...);
+    public static *** e$*(...);
+}

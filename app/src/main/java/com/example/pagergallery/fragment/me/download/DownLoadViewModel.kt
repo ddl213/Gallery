@@ -14,6 +14,7 @@ import com.example.pagergallery.repository.api.Item
 import com.example.pagergallery.unit.enmu.FragmentFromEnum
 import com.example.pagergallery.unit.logD
 import com.example.pagergallery.unit.manager.DownloadManager
+import com.example.pagergallery.unit.util.LogUtil
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -106,7 +107,7 @@ class DownLoadViewModel(application: Application) : AndroidViewModel(application
 
                     var count = 0
                     _downLoadViewList.value = collectList.map {
-                        logD("下载： ${it.item.localUrl}::${count++}")
+                        LogUtil.d("下载： ${it.item.localUrl}::${count++}")
                         it.item
                     }
 

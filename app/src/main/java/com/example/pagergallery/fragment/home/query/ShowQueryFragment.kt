@@ -30,6 +30,7 @@ class ShowQueryFragment : BaseBindFragment<FragmentShowQueryBinding>(FragmentSho
                 return GalleryFragment(true, list_type[position])
             }
         }
+        binding.imgSearch.visibility = View.GONE
 
         TabLayoutMediator(binding.tabType,binding.viewpager2) { tab, position ->
             when(position){

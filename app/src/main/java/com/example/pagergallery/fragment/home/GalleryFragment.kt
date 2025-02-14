@@ -9,6 +9,7 @@ import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.pagergallery.R
 import com.example.pagergallery.databinding.FragmentGalleryBinding
@@ -17,7 +18,8 @@ import com.example.pagergallery.fragment.me.download.PHOTO_LIST
 import com.example.pagergallery.fragment.me.download.POSITION
 import com.example.pagergallery.unit.enmu.FragmentFromEnum
 import com.example.pagergallery.unit.launchAndRepeatLifecycle
-import com.example.pagergallery.unit.logD
+import com.example.pagergallery.unit.util.KeyValueUtils
+import com.example.pagergallery.unit.util.LogUtil
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -25,10 +27,32 @@ class GalleryFragment(private val isQuery: Boolean, private val type: String) :
     LazyLoadFragment<FragmentGalleryBinding>(
         FragmentGalleryBinding::inflate
     ) {
+    private var isFirstLoad = true//在搜索页是否第一次加载
+
     //用户搜索图片的字段
     private var isResetAdapter = false
-    private var count = 0
     private val viewModel by activityViewModels<GalleryViewModel>()
+    private val listener = object : (CombinedLoadStates) -> Unit {
+        override fun invoke(p1: CombinedLoadStates) {
+            when (p1.refresh) {
+                //初次和下拉加载时显示刷新状态
+                is LoadState.Loading -> {
+                    LogUtil.d("loading")
+                }
+                //加载完成
+                is LoadState.NotLoading -> {
+                    //LogUtil.d("LoadState.NotLoading:${viewModel.galleryListLiveData.value?.size} --${count}")
+                    setAdapter(true)
+                }
+                //发生错误时
+                is LoadState.Error -> {
+//                    LogUtil.d("LoadState.Error:${viewModel.galleryListLiveData.value?.size} --${count}")
+                    LogUtil.d("LoadState.Error:${(p1.refresh as LoadState.Error).error.message}")
+                    setAdapter(false)
+                }
+            }
+        }
+    }
     private val mAdapter by lazy {
         GalleryAdapter {
             Bundle().apply {
@@ -60,44 +84,57 @@ class GalleryFragment(private val isQuery: Boolean, private val type: String) :
     override fun initView() {
         if (!isQuery) {
             launchAndRepeatLifecycle {
-                if (viewModel.reLoadState.value && viewModel.getNewItemList(type)?.isNotEmpty() == true
+                if (viewModel.reLoadState.value && viewModel.getNewItemList(type)
+                        ?.isNotEmpty() == true
                 ) {
-                    //if (mAdapter.itemCount != 0) return@launchAndRepeatLifecycle
                     mAdapter.submitData(
                         PagingData.from(viewModel.getNewItemList(type)!!)
                     )
                 }
             }
         }
+
         concatAdapter = mAdapter.withLoadStateFooter(loadMoreAdapter)
-        binding.apply {
-            recyclerviewGallery.apply {
-                layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-                adapter = concatAdapter
-            }
+        mAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+
+        binding.recyclerviewGallery.apply {
+            setHasFixedSize(true)
+            setItemViewCacheSize(20) // 增加视图缓存
+            itemAnimator = null // 必须禁用动画
+                layoutManager = StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL).apply {
+                    gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
+                    isItemPrefetchEnabled = true
+                    invalidateSpanAssignments()
+                }
+            adapter = concatAdapter
+            viewModel.recyclerViewState.value?.let { (layoutManager as StaggeredGridLayoutManager).onRestoreInstanceState(it) }
         }
+
     }
 
     override fun initEvent() {
         //设置加载刷新状态
         mAdapter.addLoadStateListener(listener)
         binding.swipeRefreshLayout.setOnRefreshListener { getData() }
-
     }
 
-    private var isFirstLoad = true
     override fun initData() {
-        if ((viewModel.getNewItemList(type)?.isEmpty() == true) && !isQuery ||
-            (isQuery && isFirstLoad)
-        ) {
-            binding.swipeRefreshLayout.isRefreshing = true
-            getData()
-            isFirstLoad = false
+        if (isQuery) {
+            if (isFirstLoad) {
+                getData()
+            }
+        } else {
+            if (viewModel.getNewItemList(type).isNullOrEmpty()) {
+                getData()
+            }
         }
+
     }
 
-    //获取api数据
+    //获取图片数据
     private fun getData() {
+        binding.swipeRefreshLayout.isRefreshing = true
+        isFirstLoad = false
         lifecycleScope.launch {
             isResetAdapter = true
             viewModel.getData().collectLatest {
@@ -108,7 +145,6 @@ class GalleryFragment(private val isQuery: Boolean, private val type: String) :
 
     private fun setAdapter(isEmpty: Boolean) {
         binding.swipeRefreshLayout.isRefreshing = false
-
         //没有数据时，如果装有底部adapter就移除，如果没有空视图就添加一个
         if (mAdapter.itemCount == 0) {
             if (concatAdapter.adapters.contains(loadMoreAdapter)) concatAdapter.removeAdapter(
@@ -128,46 +164,54 @@ class GalleryFragment(private val isQuery: Boolean, private val type: String) :
             }
         }
         resetAdapter()
-        count++
     }
+
     private fun resetAdapter() {
-        if (isResetAdapter && mAdapter.itemCount > 0) {
+        if (mAdapter.itemCount <= 0) return
+        if (isResetAdapter) {
             binding.recyclerviewGallery.scrollToPosition(0)
             isResetAdapter = false
+        } else {
+            //if (binding.recyclerviewGallery.scto)
         }
     }
 
-    private val listener = object : (CombinedLoadStates) -> Unit {
-        override fun invoke(p1: CombinedLoadStates) {
-            when (p1.refresh) {
-                //初次和下拉加载时显示刷新状态
-                is LoadState.Loading -> {
-                    logD("loading")
-                }
-                //加载完成
-                is LoadState.NotLoading -> {
-                    //logD("LoadState.NotLoading:${viewModel.galleryListLiveData.value?.size} --${count}")
-                    setAdapter(true)
-                }
-                //发生错误时
-                is LoadState.Error -> {
-//                    logD("LoadState.Error:${viewModel.galleryListLiveData.value?.size} --${count}")
-//                    logD("LoadState.Error:${(p1.refresh as LoadState.Error).error.message}")
-                    setAdapter(false)
-                }
+    override fun onResume() {
+        super.onResume()
+        restorePosition()
+    }
+
+    private fun restorePosition(){
+        val position = KeyValueUtils.getInt("SCROLL_POSITION")
+
+        if (position < 2) return
+        binding.recyclerviewGallery.post {
+            binding.recyclerviewGallery.apply {
+                val lm = layoutManager as? StaggeredGridLayoutManager
+
+                val firstPosition =lm?.findFirstVisibleItemPositions(null)?.minOrNull() ?: 0
+                val lastPosition = lm?.findLastVisibleItemPositions(null)?.maxOrNull() ?: 0
+
+                if (position in firstPosition .. lastPosition) return@apply
+                lm?.scrollToPosition(position)
             }
         }
 
+        KeyValueUtils.setInt("SCROLL_POSITION",0)
+
     }
 
+
     override fun onDestroyView() {
+        super.onDestroyView()
         binding.swipeRefreshLayout.isRefreshing = false
         mAdapter.removeLoadStateListener(listener)
-        super.onDestroyView()
+        viewModel.recyclerViewState.value = binding.recyclerviewGallery.layoutManager?.onSaveInstanceState()
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         viewModel.reLoadState.value = true
+        super.onDestroy()
+        LogUtil.d("销毁")
     }
 }

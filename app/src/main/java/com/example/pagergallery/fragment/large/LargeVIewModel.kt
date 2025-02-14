@@ -21,6 +21,7 @@ import com.example.pagergallery.unit.isNetWorkAvailable
 import com.example.pagergallery.unit.logD
 import com.example.pagergallery.unit.saveImage
 import com.example.pagergallery.unit.shortToast
+import com.example.pagergallery.unit.util.LogUtil
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -87,7 +88,7 @@ class LargeVIewModel(application: Application) : AndroidViewModel(application) {
                 right = if (!isFirstLoad) pos - 5 else pos.plus(10).also { rightIndex = it }
                 leftIndex = -5
 
-                logD("setCollectedState1 : $leftIndex : $rightIndex")
+                LogUtil.d("setCollectedState1 : $leftIndex : $rightIndex")
             } else if (pos >= photoListLiveData.value!!.size - 15) {
                 right = photoListLiveData.value!!.size.also { rightIndex = it + 5 }
                 left = if (!isFirstLoad) pos + 5 else pos.minus(10).also { leftIndex = it }
@@ -112,7 +113,7 @@ class LargeVIewModel(application: Application) : AndroidViewModel(application) {
         }
 
         _photoListLiveData.value!!.subList(left!!, right!!).apply {
-            logD("left:$left,right:$right")
+            LogUtil.d("left:$left,right:$right")
             forEach { item ->
                 item.isCollected = isCollected(item.id)
             }
@@ -139,14 +140,14 @@ class LargeVIewModel(application: Application) : AndroidViewModel(application) {
                     } else {
                         this@item.isCollected = true
                         addColl(this@item, uid)
-                        logD("addColl")
+                        LogUtil.d("addColl")
                     }
                     _collectState.value = !this
                     starState.value = !this
                     this@item.isCollected = !this
                 }
             }
-            logD("${photoListLiveData.value?.get(pos)}")
+            LogUtil.d("${photoListLiveData.value?.get(pos)}")
         }
     }
 
@@ -210,7 +211,7 @@ class LargeVIewModel(application: Application) : AndroidViewModel(application) {
                             if (!url.isNullOrEmpty()) {
                                 item.localUrl = url
                             }
-                            logD("保存到数据库： ${item.localUrl}")
+                            LogUtil.d("保存到数据库： ${item.localUrl}")
                             val time = System.currentTimeMillis()
                             val uid = repository.user.value?.id ?: return@withContext
                             val value = DownLoad(item.id, item, time, uid)

@@ -9,6 +9,7 @@ import com.example.pagergallery.databinding.ImageCellBinding
 import com.example.pagergallery.repository.api.Item
 import com.example.pagergallery.unit.loadImage
 import com.example.pagergallery.unit.logD
+import com.example.pagergallery.unit.util.LogUtil
 
 class GalleryAdapter(private val onClick : (Int?) -> Unit) :
     PagingDataAdapter<Item, GalleryAdapter.MyViewHolder>(DiffCALLBACK) {
@@ -44,7 +45,6 @@ class GalleryAdapter(private val onClick : (Int?) -> Unit) :
 
     class MyViewHolder(private val binding: ImageCellBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Item) {
-            logD("$item")
             binding.imgWebUrl.layoutParams.height = item.webImageHeight//给每个图片设置一个初始高度，防止加载图片过程中出现多次排列
             itemView.context.loadImage(item.webFormatURL, binding.imgWebUrl,false)//加载图片
         }
