@@ -3,9 +3,9 @@ package com.example.pagergallery.repository.local.tables.collection
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.pagergallery.unit.TABLE_COLL_NAME
+import com.example.pagergallery.unit.util.IConstStringUtil
 
-@Entity(tableName = TABLE_COLL_NAME)
+@Entity(tableName = IConstStringUtil.TABLE_COLL_NAME)
 data class Collection(
     @PrimaryKey val id : Long,
     @ColumnInfo("hits") val hits: String,

@@ -28,6 +28,7 @@ import com.example.pagergallery.unit.launchAndRepeatLifecycle
 import com.example.pagergallery.unit.loadImage
 import com.example.pagergallery.unit.logD
 import com.example.pagergallery.unit.shortToast
+import com.example.pagergallery.unit.util.IConstStringUtil
 import com.example.pagergallery.unit.util.KeyValueUtils
 import com.example.pagergallery.unit.util.LogUtil
 import com.example.pagergallery.unit.view.BottomAppBar
@@ -49,6 +50,7 @@ class LargeViewFragment :
             window.decorView
         )
     }
+    private val propertyName = "translationY"
 
     private val mAdapter = adapterOf<Item, LargeViewCellBinding>(
         LargeViewCellBinding::class.java,
@@ -256,9 +258,9 @@ class LargeViewFragment :
         val view1 = binding.layoutActionBar.layoutActionBar
         val items = mutableListOf<Animator>()
 
-        items.add(ObjectAnimator.ofFloat(view1, "translationY", 0f, -240f))
+        items.add(ObjectAnimator.ofFloat(view1, propertyName, 0f, -240f))
         if (!isDownLoad) {
-            items.add(ObjectAnimator.ofFloat(binding.bottomToolBar, "translationY", 0f, 150f))
+            items.add(ObjectAnimator.ofFloat(binding.bottomToolBar, propertyName, 0f, 150f))
         }
 
         AnimatorSet().apply animator@{
@@ -281,10 +283,10 @@ class LargeViewFragment :
         val view1 = binding.layoutActionBar.layoutActionBar
         val items = mutableListOf<Animator>()
         view1.visibility = View.VISIBLE
-        items.add(ObjectAnimator.ofFloat(view1, "translationY", -60f, 0f))
+        items.add(ObjectAnimator.ofFloat(view1, propertyName, -60f, 0f))
         if (!isDownLoad) {
             binding.bottomToolBar.visibility = View.VISIBLE
-            items.add(ObjectAnimator.ofFloat(binding.bottomToolBar, "translationY", 50f, 0f))
+            items.add(ObjectAnimator.ofFloat(binding.bottomToolBar, propertyName, 50f, 0f))
         }
         AnimatorSet().apply animator@{
             playTogether(items)
@@ -293,15 +295,11 @@ class LargeViewFragment :
         }
     }
 
-    override fun onDestroyView() {
-        KeyValueUtils.setInt("SCROLL_POSITION",binding.viewPager2.currentItem)
-        super.onDestroyView()
-    }
-
     override fun onDestroy() {
         if (isImmerseImageModel.value || shouldCache) {
             controller.show(WindowInsetsCompat.Type.statusBars())
         }
+        KeyValueUtils.setInt(IConstStringUtil.SCROLL_POSITION,binding.viewPager2.currentItem)
         super.onDestroy()
     }
 }

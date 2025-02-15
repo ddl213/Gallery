@@ -3,10 +3,10 @@ package com.example.pagergallery.repository.local.tables.user
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.example.pagergallery.unit.TABLE_USER
+import com.example.pagergallery.unit.util.IConstStringUtil
 import com.google.gson.annotations.SerializedName
 
-@Entity(tableName = TABLE_USER, indices = [Index(value = ["account","phone"], unique = true)])
+@Entity(tableName = IConstStringUtil.TABLE_USER, indices = [Index(value = ["account","phone"], unique = true)])
 data class User(
     @PrimaryKey(autoGenerate = true) @field:SerializedName("id") val id : Int?,
     @field:SerializedName( "account") val account : Long,

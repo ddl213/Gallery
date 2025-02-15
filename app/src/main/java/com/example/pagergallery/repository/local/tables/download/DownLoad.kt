@@ -4,11 +4,10 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.pagergallery.repository.api.Item
-import com.example.pagergallery.unit.TABLE_CACHE
-import com.example.pagergallery.unit.TABLE_DOWNLOAD
+import com.example.pagergallery.unit.util.IConstStringUtil
 
 
-@Entity(tableName = TABLE_DOWNLOAD)
+@Entity(tableName = IConstStringUtil.TABLE_DOWNLOAD)
 data class DownLoad(
     @PrimaryKey val id : Long,
     @ColumnInfo("item")  val item : Item,

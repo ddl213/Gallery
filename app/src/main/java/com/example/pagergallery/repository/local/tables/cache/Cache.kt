@@ -5,12 +5,12 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
 import com.example.pagergallery.repository.api.Item
-import com.example.pagergallery.unit.TABLE_CACHE
+import com.example.pagergallery.unit.util.IConstStringUtil
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 
-@Entity(tableName = TABLE_CACHE)
+@Entity(tableName = IConstStringUtil.TABLE_CACHE)
 data class Cache(
     @PrimaryKey val id : Long,
     @ColumnInfo("item")  val item : Item,

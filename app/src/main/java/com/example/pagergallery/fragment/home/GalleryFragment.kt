@@ -17,6 +17,7 @@ import com.example.pagergallery.fragment.me.download.ITEM_TYPE
 import com.example.pagergallery.fragment.me.download.PHOTO_LIST
 import com.example.pagergallery.fragment.me.download.POSITION
 import com.example.pagergallery.unit.enmu.FragmentFromEnum
+import com.example.pagergallery.unit.util.IConstStringUtil
 import com.example.pagergallery.unit.util.KeyValueUtils
 import com.example.pagergallery.unit.util.LogUtil
 import kotlinx.coroutines.flow.collectLatest
@@ -159,10 +160,10 @@ class GalleryFragment(private val isQuery: Boolean, private val type: String) :
         super.onResume()
         //滚动到指定位置
         if (!viewModel.reLoadState.value) {
-            val position = KeyValueUtils.getInt("SCROLL_POSITION")
+            val position = KeyValueUtils.getInt(IConstStringUtil.SCROLL_POSITION)
             if (position != -1) {
                 restorePosition(position)
-                KeyValueUtils.setInt("SCROLL_POSITION", -1)
+                KeyValueUtils.setInt(IConstStringUtil.SCROLL_POSITION, -1)
             }
         } else {
             viewModel.reLoadState.value = false

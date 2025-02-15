@@ -31,6 +31,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.example.pagergallery.R
+import com.example.pagergallery.unit.util.IConstIntUtil
 import com.example.pagergallery.unit.util.LogUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -171,7 +172,7 @@ fun Bitmap.saveImage(activity: Activity, account: Long): String? {
     //创建该图片的下载路径（加上图片的名字）
     val file = File(dir, "pixabay_${System.currentTimeMillis()}.png")
 
-    if (saveImageToStream(FileOutputStream(file)) != SAVE_IMAGE_SUCCESS) {
+    if (saveImageToStream(FileOutputStream(file)) != IConstIntUtil.SAVE_IMAGE_SUCCESS) {
         activity.runOnUiThread { activity.shortToast("下载异常，已中断").show() }
         return null
     }
@@ -205,7 +206,7 @@ fun Bitmap.saveImageQ(activity: Activity, account: Long): String? {
     LogUtil.d(uri.toString())
     if (uri != null) {
         //判断下载是否成功
-        if (saveImageToStream(contentResolver.openOutputStream(uri)) != SAVE_IMAGE_SUCCESS) {
+        if (saveImageToStream(contentResolver.openOutputStream(uri)) != IConstIntUtil.SAVE_IMAGE_SUCCESS) {
             activity.runOnUiThread { activity.shortToast("下载异常，已中断").show() }
             return null
         }
@@ -226,9 +227,9 @@ fun Bitmap.saveImageToStream(outputStream: OutputStream?): Int? = outputStream?.
     try {
         compress(Bitmap.CompressFormat.PNG, 100, it)
         it.flush()
-        SAVE_IMAGE_SUCCESS
+        IConstIntUtil.SAVE_IMAGE_SUCCESS
     } catch (e: Exception) {
-        SAVE_IMAGE_FAIL
+        IConstIntUtil.SAVE_IMAGE_FAIL
     } finally {
         it.close()
     }
