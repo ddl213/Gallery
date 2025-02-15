@@ -17,7 +17,6 @@ import com.example.pagergallery.fragment.me.download.ITEM_TYPE
 import com.example.pagergallery.fragment.me.download.PHOTO_LIST
 import com.example.pagergallery.fragment.me.download.POSITION
 import com.example.pagergallery.unit.enmu.FragmentFromEnum
-import com.example.pagergallery.unit.launchAndRepeatLifecycle
 import com.example.pagergallery.unit.util.KeyValueUtils
 import com.example.pagergallery.unit.util.LogUtil
 import kotlinx.coroutines.flow.collectLatest
@@ -41,13 +40,13 @@ class GalleryFragment(private val isQuery: Boolean, private val type: String) :
                 }
                 //加载完成
                 is LoadState.NotLoading -> {
-                    //LogUtil.d("LoadState.NotLoading:${viewModel.galleryListLiveData.value?.size} --${count}")
+                    LogUtil.d("加载完成LoadState.NotLoading:")
                     setAdapter(true)
                 }
                 //发生错误时
                 is LoadState.Error -> {
 //                    LogUtil.d("LoadState.Error:${viewModel.galleryListLiveData.value?.size} --${count}")
-                    LogUtil.d("LoadState.Error:${(p1.refresh as LoadState.Error).error.message}")
+                    LogUtil.d("发生错误时LoadState.Error:${(p1.refresh as LoadState.Error).error}")
                     setAdapter(false)
                 }
             }
@@ -73,43 +72,35 @@ class GalleryFragment(private val isQuery: Boolean, private val type: String) :
 
     //组合adapter
     private lateinit var concatAdapter: ConcatAdapter
+    private val emptyAdapter = EmptyAdapter { mAdapter.retry() }
     private val loadMoreAdapter by lazy {
         LoadMoreAdapter { mAdapter.retry() }
     }
-    private val emptyAdapter = EmptyAdapter { mAdapter.retry() }
 
     /**
      * 各个控件的功能设置
      */
     override fun initView() {
-        if (!isQuery) {
-            launchAndRepeatLifecycle {
-                if (viewModel.reLoadState.value && viewModel.getNewItemList(type)
-                        ?.isNotEmpty() == true
-                ) {
-                    mAdapter.submitData(
-                        PagingData.from(viewModel.getNewItemList(type)!!)
-                    )
-                }
-            }
-        }
-
         concatAdapter = mAdapter.withLoadStateFooter(loadMoreAdapter)
-        mAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
+        mAdapter.stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT
 
         binding.recyclerviewGallery.apply {
             setHasFixedSize(true)
             setItemViewCacheSize(20) // 增加视图缓存
-            itemAnimator = null // 必须禁用动画
-                layoutManager = StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL).apply {
+            itemAnimator = null // 禁用动画
+            layoutManager =
+                StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL).apply {
                     gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
                     isItemPrefetchEnabled = true
                     invalidateSpanAssignments()
                 }
             adapter = concatAdapter
-            viewModel.recyclerViewState.value?.let { (layoutManager as StaggeredGridLayoutManager).onRestoreInstanceState(it) }
+            viewModel.recyclerViewState.value?.let {
+                (layoutManager as? StaggeredGridLayoutManager)?.onRestoreInstanceState(
+                    it
+                )
+            }
         }
-
     }
 
     override fun initEvent() {
@@ -122,21 +113,19 @@ class GalleryFragment(private val isQuery: Boolean, private val type: String) :
         if (isQuery) {
             if (isFirstLoad) {
                 getData()
+                isFirstLoad = false
             }
         } else {
             if (viewModel.getNewItemList(type).isNullOrEmpty()) {
                 getData()
             }
         }
-
     }
 
     //获取图片数据
     private fun getData() {
         binding.swipeRefreshLayout.isRefreshing = true
-        isFirstLoad = false
         lifecycleScope.launch {
-            isResetAdapter = true
             viewModel.getData().collectLatest {
                 mAdapter.submitData(it)
             }
@@ -163,55 +152,92 @@ class GalleryFragment(private val isQuery: Boolean, private val type: String) :
                 concatAdapter.addAdapter(loadMoreAdapter)
             }
         }
-        resetAdapter()
     }
 
-    private fun resetAdapter() {
-        if (mAdapter.itemCount <= 0) return
-        if (isResetAdapter) {
-            binding.recyclerviewGallery.scrollToPosition(0)
-            isResetAdapter = false
-        } else {
-            //if (binding.recyclerviewGallery.scto)
-        }
-    }
-
+    /**onResume()*/
     override fun onResume() {
         super.onResume()
-        restorePosition()
-    }
-
-    private fun restorePosition(){
-        val position = KeyValueUtils.getInt("SCROLL_POSITION")
-
-        if (position < 2) return
-        binding.recyclerviewGallery.post {
-            binding.recyclerviewGallery.apply {
-                val lm = layoutManager as? StaggeredGridLayoutManager
-
-                val firstPosition =lm?.findFirstVisibleItemPositions(null)?.minOrNull() ?: 0
-                val lastPosition = lm?.findLastVisibleItemPositions(null)?.maxOrNull() ?: 0
-
-                if (position in firstPosition .. lastPosition) return@apply
-                lm?.scrollToPosition(position)
+        //滚动到指定位置
+        if (!viewModel.reLoadState.value) {
+            val position = KeyValueUtils.getInt("SCROLL_POSITION")
+            if (position != -1) {
+                restorePosition(position)
+                KeyValueUtils.setInt("SCROLL_POSITION", -1)
             }
+        } else {
+            viewModel.reLoadState.value = false
         }
-
-        KeyValueUtils.setInt("SCROLL_POSITION",0)
-
     }
 
+    private fun restorePosition(position: Int, visibility: Boolean = false) {
+        binding.recyclerviewGallery.postDelayed({
+            binding.recyclerviewGallery.apply {
+                //在向上滚动到可见位置后，再次滚动到屏幕的顶部
+                if (visibility) {
+                    if (position >= 0 && position < this.childCount) {
+                        val top = this.getChildAt(position)?.top ?: 0
+                        if (top == 0) return@apply
+                        this.smoothScrollBy(0, top)
+                    }
+                    return@apply
+                }
 
+                //没有做任何滚动操作才执行下面代码
+                val lm = (this.layoutManager as? StaggeredGridLayoutManager) ?: return@apply
+                val firstPosition =
+                    lm.findFirstCompletelyVisibleItemPositions(null)?.minOrNull() ?: 0
+                val lastPosition = lm.findLastCompletelyVisibleItemPositions(null)?.maxOrNull() ?: 0
+
+                if (firstPosition == -1 || lastPosition == -1) return@apply
+
+                if (position < firstPosition) {
+                    this.smoothScrollToPosition(position)
+                } else if (position > lastPosition) {
+                    this.scrollToPosition(position)
+                    restorePosition(position, true)
+                }
+            }
+        }, 30)
+    }
+
+    /**Stop()*/
+    override fun onStop() {
+        super.onStop()
+        onSaveScrollState()
+    }
+
+    private fun onSaveScrollState() {
+        viewModel.recyclerViewState.value =
+            binding.recyclerviewGallery.layoutManager?.onSaveInstanceState()
+    }
+
+    /**onDestroyView()*/
     override fun onDestroyView() {
         super.onDestroyView()
         binding.swipeRefreshLayout.isRefreshing = false
         mAdapter.removeLoadStateListener(listener)
-        viewModel.recyclerViewState.value = binding.recyclerviewGallery.layoutManager?.onSaveInstanceState()
     }
 
+    /**onDestroy()*/
     override fun onDestroy() {
         viewModel.reLoadState.value = true
         super.onDestroy()
-        LogUtil.d("销毁")
+    }
+
+
+    /**onViewStateRestored(savedInstanceState: Bundle?)*/
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        if (!isQuery) {
+            lifecycleScope.launch {
+                if (viewModel.reLoadState.value && viewModel.getNewItemList(type)
+                        ?.isNotEmpty() == true
+                ) {
+                    mAdapter.submitData(
+                        PagingData.from(viewModel.getNewItemList(type)!!)
+                    )
+                }
+            }
+        }
     }
 }

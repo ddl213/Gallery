@@ -77,6 +77,12 @@ class BaseFragment : BaseBindFragment<FragmentBaseBinding>(FragmentBaseBinding::
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+
+        LogUtil.d("Base : onStop()")
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         LogUtil.d("销毁onDestroy（）")

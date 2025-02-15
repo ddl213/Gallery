@@ -18,10 +18,9 @@ class GalleryViewModel(application: Application) : AndroidViewModel(application)
     private val reLoad = mutableStateOf(false)
     val currentTab = mutableStateOf(0)
     val reLoadState = mutableStateOf(false)
-    val reFresh = repository.reFresh
-    val scrollPositionBundle = mutableStateOf<Bundle?>(null)
 
     val recyclerViewState = mutableStateOf<Parcelable?>(null)
+    val scrollOffset = mutableStateOf<Int?>(null)
 
     fun getNewItemList(type: String): List<Item>? {
         return repository.galleryListLiveDate.value?.get(type)
