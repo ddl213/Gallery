@@ -166,19 +166,15 @@ class Repository private constructor(context: Context) {
         if (list.isEmpty()) {
             return
         }
-        LogUtil.d("isActivityFirstLoad=${isActivityFirstLoad.value},_galleryListLiveDate=${_galleryListLiveDate.value?.get(type)?.size}")
-        if (isActivityFirstLoad.value == true){
-            _galleryListLiveDate.postValue(mutableMapOf(type to list))
-            _isActivityFirstLoad.postValue(false)
-            return
-        }
 
         val isDefault = queryStrLiveData.value.isNullOrEmpty()
         if (galleryListLiveDate.value.isNullOrEmpty()) {
-            if (isDefault)
-                _galleryListLiveDate.value = mutableMapOf(type to list)
-            else
-                _galleryQueryListLiveDate.value = mutableMapOf(type to list)
+            if (isDefault) {
+                _galleryListLiveDate.postValue(mutableMapOf(type to list))
+                _isActivityFirstLoad.postValue(false)
+            } else {
+                _galleryQueryListLiveDate.postValue(mutableMapOf(type to list))
+            }
             return
         }
         if (isDefault) {
