@@ -9,18 +9,19 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.pagergallery.R
-import com.example.pagergallery.unit.launchAndRepeatLifecycle
 import com.example.pagergallery.unit.shortToast
+import com.example.pagergallery.unit.util.IConstStringUtil
 import com.example.pagergallery.unit.view.RegisterCompose
+import kotlinx.coroutines.launch
 
 class RegisterFragment : Fragment() {
     private val viewModel by viewModels<LoginViewModel> ()
 
     private val isReset by lazy {
-        arguments?.getString(NAVIGATE_TO).let {
+        arguments?.getString(IConstStringUtil.NAVIGATE_TO).let {
             !it.isNullOrEmpty() && it == "Reset"
         }
     }
@@ -45,27 +46,20 @@ class RegisterFragment : Fragment() {
         }
     }
 
-    private fun click(phone: String, pwd: String, confirmPwd: String, account: String?) {
-        if (!(phone.isNotEmpty() && phone.isDigitsOnly()) || phone.length != 11) {
-            requireContext().shortToast("请输入正确的手机号码").show()
-            return
-        }
-        if (!(pwd.isNotEmpty() || confirmPwd.isNotEmpty())) {
-            requireContext().shortToast("密码不能为空").show()
-            return
-        }
-        if (pwd.length < 6) {
-            requireContext().shortToast("密码不能小于6位").show()
-            return
-        }
-        if (pwd.replace("\\s+".toRegex(), "") != confirmPwd.replace("\\s+".toRegex(), "")) {
-            requireContext().shortToast("两次密码不一致").show()
-            return
-        }
+    private fun click(phone: String, pwd: String, confirmPwd: String, account: String?){
+
+        if (checkInfo(phone, pwd, confirmPwd, account).not()) return
+
         if (isReset) {
-            reset(pwd, account)
+            lifecycleScope.launch {
+                if (viewModel.resetPwd(account!!.toLong(), pwd)) {
+                    requireContext().shortToast("修改成功").show()
+                    findNavController().popBackStack()
+                }
+            }
+//            reset(pwd, account)
         } else {
-            launchAndRepeatLifecycle(Lifecycle.State.RESUMED) {
+            lifecycleScope.launch {
                 viewModel.register(pwd, phone.toLong()).let {
                     if (it != null) {
                         value.value = it
@@ -74,21 +68,35 @@ class RegisterFragment : Fragment() {
                     }
                 }
             }
-
         }
     }
 
-    private fun reset(pwd: String, account: String?) {
-        if ((account.isNullOrEmpty() || !account.isDigitsOnly())) {
-            requireContext().shortToast("请输入正确的账号").show()
-            return
+    private fun checkInfo(phone: String, pwd: String, confirmPwd: String, account: String?) : Boolean{
+        if (!(phone.isNotEmpty() && phone.isDigitsOnly()) || phone.length != 11) {
+            requireContext().shortToast("请输入正确的手机号码").show()
+            return false
         }
-        launchAndRepeatLifecycle(Lifecycle.State.RESUMED) {
-            if (viewModel.resetPwd(account.toLong(), pwd)) {
-                requireContext().shortToast("修改成功").show()
-                findNavController().popBackStack()
+        if (!(pwd.isNotEmpty() || confirmPwd.isNotEmpty())) {
+            requireContext().shortToast("密码不能为空").show()
+            return false
+        }
+        if (pwd.length < 6) {
+            requireContext().shortToast("密码不能小于6位").show()
+            return false
+        }
+        if (pwd.replace("\\s+".toRegex(), "") != confirmPwd.replace("\\s+".toRegex(), "")) {
+            requireContext().shortToast("两次密码不一致").show()
+            return false
+        }
+
+        if (isReset){
+            if ((account.isNullOrEmpty() || !account.isDigitsOnly())) {
+                requireContext().shortToast("请输入正确的账号").show()
+                return false
             }
         }
+
+        return true
     }
 
     private val dialogClick: (isBack: Boolean) -> Unit

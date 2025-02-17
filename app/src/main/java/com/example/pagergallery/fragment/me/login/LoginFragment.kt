@@ -9,17 +9,16 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.pagergallery.R
 import com.example.pagergallery.unit.enmu.LoginNavigateTo
-import com.example.pagergallery.unit.launchAndRepeatLifecycle
 import com.example.pagergallery.unit.shortToast
+import com.example.pagergallery.unit.util.IConstStringUtil
 import com.example.pagergallery.unit.view.LoginCompose
 import kotlinx.coroutines.launch
 
-const val NAVIGATE_TO = "navigate"
+
 
 class LoginFragment : Fragment() {
     private val viewModel by viewModels<LoginViewModel>()
@@ -65,7 +64,7 @@ class LoginFragment : Fragment() {
 
             LoginNavigateTo.Register, LoginNavigateTo.Reset -> {
                 Bundle().apply {
-                    putString(NAVIGATE_TO, navigateTo.toString())
+                    putString(IConstStringUtil.NAVIGATE_TO, navigateTo.toString())
                     findNavController().navigate(
                         R.id.action_loginFragment_to_registerFragment,
                         this

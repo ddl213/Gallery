@@ -27,7 +27,11 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     //注册
-    suspend fun register(pwd: String, phone: Long): Long {
+    suspend fun register(pwd: String, phone: Long): Long? {
+        exitPhone(phone).let {
+            if (it) return null
+        }
+
         var random = -1L
         while (random == -1L) {
             Random.nextLong(100000, 1000000000).apply {
@@ -48,7 +52,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
             )
             random
         }catch (e : SQLiteConstraintException){
-            -1L
+            null
         }
     }
 
@@ -59,5 +63,9 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
     //第三方登录
     fun thirdPartLogin(navigateTo: LoginNavigateTo) {}
+
+    private suspend fun exitPhone(phone: Long) : Boolean{
+        return userDaoUtil.existPhone(phone)
+    }
 
 }

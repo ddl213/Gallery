@@ -7,8 +7,6 @@ import com.example.pagergallery.unit.util.IConstStringUtil
 
 @Dao
 interface UserDao : BaseDao<User>{
-
-
     @Query("DELETE FROM ${IConstStringUtil.TABLE_USER} WHERE account = :account")
     suspend fun deleteUserByAccount(account : Long) : Int
 
@@ -30,4 +28,7 @@ interface UserDao : BaseDao<User>{
 
     @Query("SELECT EXISTS(SELECT account FROM ${IConstStringUtil.TABLE_USER} WHERE account = :account)")
     suspend fun existAccount(account: Long) : Boolean
+
+    @Query("SELECT EXISTS(SELECT phone FROM ${IConstStringUtil.TABLE_USER} WHERE phone = :phone)")
+    suspend fun existPhone(phone: Long) : Boolean
 }

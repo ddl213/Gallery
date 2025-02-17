@@ -7,4 +7,5 @@ object IConstStringUtil {
     const val TABLE_DOWNLOAD = "table_download"
     const val TABLE_USER = "table_user"
     const val SCROLL_POSITION = "SCROLL_POSITION"
+    const val NAVIGATE_TO = "NAVIGATE_TO"
 }
