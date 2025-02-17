@@ -65,6 +65,8 @@ class LargeViewFragment :
         isVector = item?.type == "vector/svg"
     }
 
+
+    /**initData()*/
     @Suppress("DEPRECATION")
     override fun initView() {
         //适配低版本获取序列化查看的图片类型
@@ -132,7 +134,19 @@ class LargeViewFragment :
                     WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
             }
         }
+    }
 
+    @Suppress("DEPRECATION")
+    private fun getItemList(): MutableList<Item> {
+        val list = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+            arguments?.getParcelableArrayList(PHOTO_LIST, Item::class.java) ?: mutableListOf()
+        else arguments?.getParcelableArrayList(PHOTO_LIST) ?: mutableListOf()
+
+        viewModel.setListLiveData(list)
+        if (list.isNotEmpty() && list[0].type == "vector/svg") {
+            isVector = true
+        }
+        return list
     }
 
     private fun shouldShowBottomBar() {
@@ -147,9 +161,14 @@ class LargeViewFragment :
         }
     }
 
+
+    /**initData()*/
     override fun initData() {
     }
 
+
+
+    /**initEvent()*/
     override fun initEvent() {
         binding.layoutActionBar.tvBack.setOnClickListener {
             findNavController().navigateUp()
@@ -168,19 +187,6 @@ class LargeViewFragment :
     }
 
 
-    @Suppress("DEPRECATION")
-    private fun getItemList(): MutableList<Item> {
-        val list = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-            arguments?.getParcelableArrayList(PHOTO_LIST, Item::class.java) ?: mutableListOf()
-        else arguments?.getParcelableArrayList(PHOTO_LIST) ?: mutableListOf()
-
-        viewModel.setListLiveData(list)
-        if (list.isNotEmpty() && list[0].type == "vector/svg") {
-            isVector = true
-        }
-        return list
-    }
-
     //设置图片触摸监听
     private fun setPhotoOnTouchListener() {
         mAdapter.addDoubleAndScaleListener(R.id.photoView)
@@ -192,6 +198,8 @@ class LargeViewFragment :
                 isImmerseImageModel.value = true
             }
         }
+
+
     }
 
     /**

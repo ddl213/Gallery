@@ -10,6 +10,7 @@ import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.pagergallery.R
 import com.example.pagergallery.unit.shortToast
@@ -57,7 +58,6 @@ class RegisterFragment : Fragment() {
                     findNavController().popBackStack()
                 }
             }
-//            reset(pwd, account)
         } else {
             lifecycleScope.launch {
                 viewModel.register(pwd, phone.toLong()).let {
@@ -105,7 +105,7 @@ class RegisterFragment : Fragment() {
                 findNavController().popBackStack()
                 Bundle().apply {
                     putLong("account", value.value)
-                    findNavController().navigate(R.id.loginFragment, this)
+                    findNavController().navigate(R.id.action_self, this)
                 }
 
             }

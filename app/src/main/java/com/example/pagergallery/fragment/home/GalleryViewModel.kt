@@ -1,7 +1,6 @@
 package com.example.pagergallery.fragment.home
 
 import android.app.Application
-import android.os.Bundle
 import android.os.Parcelable
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
@@ -9,6 +8,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.example.pagergallery.repository.Repository
 import com.example.pagergallery.repository.api.Item
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 
 class GalleryViewModel(application: Application) : AndroidViewModel(application) {
     //初始化变量
@@ -20,14 +23,16 @@ class GalleryViewModel(application: Application) : AndroidViewModel(application)
     val reLoadState = mutableStateOf(false)
 
     val recyclerViewState = mutableStateOf<Parcelable?>(null)
-    val scrollOffset = mutableStateOf<Int?>(null)
+
+    fun getActivityLoadState() = repository.isActivityFirstLoad.value
+
 
     fun getNewItemList(type: String): List<Item>? {
         return repository.galleryListLiveDate.value?.get(type)
     }
 
     //获取图片
-    fun getData() = repository.getPagingData().cachedIn(viewModelScope)
+    fun getData() = repository.getPagingData().cachedIn(CoroutineScope(Dispatchers.IO))
 
     private fun firstLoad() {
         isFirstLoad[currentTab.value] = false

@@ -23,8 +23,6 @@ class BaseFragment : BaseBindFragment<FragmentBaseBinding>(FragmentBaseBinding::
     private val viewModel by activityViewModels<GalleryViewModel>()
 
     override fun initView() {
-
-        //binding.root.setBackgroundColor(ContextCompat.getColor(requireContext(),R.color.teal_700))
         binding.tabType.setSelectedTabIndicatorColor(ContextCompat.getColor(requireContext(),R.color.white))
 
         binding.viewpager2.adapter = object : FragmentStateAdapter(this) {

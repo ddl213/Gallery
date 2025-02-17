@@ -60,7 +60,7 @@
         android:id="@+id/mineFragment"
         android:name="com.example.pagergallery.fragment.me.MineFragment"
         android:label="@string/bnv_mine"
-        tools:layout="@layout/fragment_mine" >
+        tools:layout="@layout/fragment_me" >
         <action
             android:id="@+id/action_mineFragment_to_collectionFragment"
             app:destination="@id/collectionFragment" />
@@ -81,6 +81,13 @@
         android:id="@+id/loginFragment"
         android:name="com.example.pagergallery.fragment.me.login.LoginFragment"
         android:label="LoginFragment" >
+        <action
+            android:id="@+id/action_self"
+            app:destination="@id/loginFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/loginFragment"
+            app:popUpToInclusive="true"
+            app:restoreState="true"/>
         <action
             android:id="@+id/action_loginFragment_to_mineFragment"
             app:destination="@id/mineFragment" />

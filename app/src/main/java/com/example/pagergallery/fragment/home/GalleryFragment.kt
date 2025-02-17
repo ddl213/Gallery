@@ -1,5 +1,6 @@
 package com.example.pagergallery.fragment.home
 
+import android.content.ClipData.Item
 import android.os.Bundle
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
@@ -17,9 +18,12 @@ import com.example.pagergallery.fragment.me.download.ITEM_TYPE
 import com.example.pagergallery.fragment.me.download.PHOTO_LIST
 import com.example.pagergallery.fragment.me.download.POSITION
 import com.example.pagergallery.unit.enmu.FragmentFromEnum
+import com.example.pagergallery.unit.launchAndRepeatLifecycle
 import com.example.pagergallery.unit.util.IConstStringUtil
 import com.example.pagergallery.unit.util.KeyValueUtils
 import com.example.pagergallery.unit.util.LogUtil
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -27,10 +31,9 @@ class GalleryFragment(private val isQuery: Boolean, private val type: String) :
     LazyLoadFragment<FragmentGalleryBinding>(
         FragmentGalleryBinding::inflate
     ) {
-    private var isFirstLoad = true//在搜索页是否第一次加载
+    private var isFirstLoad = true//是否第一次加载
 
     //用户搜索图片的字段
-    private var isResetAdapter = false
     private val viewModel by activityViewModels<GalleryViewModel>()
     private val listener = object : (CombinedLoadStates) -> Unit {
         override fun invoke(p1: CombinedLoadStates) {
@@ -74,9 +77,7 @@ class GalleryFragment(private val isQuery: Boolean, private val type: String) :
     //组合adapter
     private lateinit var concatAdapter: ConcatAdapter
     private val emptyAdapter = EmptyAdapter { mAdapter.retry() }
-    private val loadMoreAdapter by lazy {
-        LoadMoreAdapter { mAdapter.retry() }
-    }
+    private val loadMoreAdapter = LoadMoreAdapter { mAdapter.retry() }
 
     /**
      * 各个控件的功能设置
@@ -117,6 +118,7 @@ class GalleryFragment(private val isQuery: Boolean, private val type: String) :
                 isFirstLoad = false
             }
         } else {
+            LogUtil.d("initData: 是否有数据 ${!viewModel.getNewItemList(type).isNullOrEmpty()}")
             if (viewModel.getNewItemList(type).isNullOrEmpty()) {
                 getData()
             }
@@ -128,6 +130,7 @@ class GalleryFragment(private val isQuery: Boolean, private val type: String) :
         binding.swipeRefreshLayout.isRefreshing = true
         lifecycleScope.launch {
             viewModel.getData().collectLatest {
+                LogUtil.d("viewModel.getData().collectLatest")
                 mAdapter.submitData(it)
             }
         }
@@ -153,6 +156,7 @@ class GalleryFragment(private val isQuery: Boolean, private val type: String) :
                 concatAdapter.addAdapter(loadMoreAdapter)
             }
         }
+        LogUtil.d("setAdapter ")
     }
 
     /**onResume()*/
@@ -221,8 +225,12 @@ class GalleryFragment(private val isQuery: Boolean, private val type: String) :
 
     /**onDestroy()*/
     override fun onDestroy() {
-        viewModel.reLoadState.value = true
         super.onDestroy()
+        viewModel.reLoadState.value = true
+        val value = viewModel.getNewItemList(type)
+        if (!value.isNullOrEmpty()) {
+            KeyValueUtils.setString(type, Gson().toJson(value))
+        }
     }
 
 
@@ -231,8 +239,21 @@ class GalleryFragment(private val isQuery: Boolean, private val type: String) :
         super.onViewStateRestored(savedInstanceState)
         if (!isQuery) {
             lifecycleScope.launch {
-                if (viewModel.reLoadState.value && viewModel.getNewItemList(type)
-                        ?.isNotEmpty() == true
+
+                //如果是第一次打开，就先显示上次加载的数据。再重新加载数据
+                if (viewModel.getActivityLoadState() == true) {
+                    val json = KeyValueUtils.getString(type)
+                    if (!json.isNullOrEmpty()) {
+                        val typeToken = object :
+                            TypeToken<List<com.example.pagergallery.repository.api.Item>>() {}
+                        val value = Gson().fromJson(json, typeToken)
+                        mAdapter.submitData(PagingData.from(value))
+                    }
+                    return@launch
+                }
+                //不是第一次加载，就将已加载的数据显示出来
+                if ((mAdapter.itemCount == 0) && (viewModel.getNewItemList(type)
+                        ?.isNotEmpty() == true)
                 ) {
                     mAdapter.submitData(
                         PagingData.from(viewModel.getNewItemList(type)!!)

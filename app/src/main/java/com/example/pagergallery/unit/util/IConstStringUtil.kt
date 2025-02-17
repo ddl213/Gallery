@@ -8,4 +8,5 @@ object IConstStringUtil {
     const val TABLE_USER = "table_user"
     const val SCROLL_POSITION = "SCROLL_POSITION"
     const val NAVIGATE_TO = "NAVIGATE_TO"
+    const val GALLERY_ITEM_LIST = "GALLERY_ITEM_LIST"
 }

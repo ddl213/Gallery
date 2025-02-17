@@ -4,6 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.pagergallery.repository.Repository
 import com.example.pagergallery.unit.logD
+import com.example.pagergallery.unit.util.LogUtil
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -18,7 +19,7 @@ class PagingDataSource(
         return try {
             val page = params.key ?: 1 //获取当前的页数  如果为空则为第一页
             val data = repository.getPic(queryString,page)
-            //LogUtil.d("page:$page,data:${data.isNotEmpty()}")
+            LogUtil.d("PagingDataSource:       page:$page,data:${data.isNotEmpty()}")
             LoadResult.Page(
                 data,
                 if (page > 1) page - 1 else null,

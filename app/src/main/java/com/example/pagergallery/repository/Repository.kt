@@ -3,6 +3,7 @@ package com.example.pagergallery.repository
 import android.content.Context
 import android.graphics.Color
 import android.os.Build
+import androidx.compose.runtime.mutableStateOf
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -17,6 +18,7 @@ import com.example.pagergallery.repository.local.GalleryDatabase
 import com.example.pagergallery.repository.local.tables.user.User
 import com.example.pagergallery.unit.util.KeyValueUtils
 import com.example.pagergallery.unit.enmu.ImageTypeEnum
+import com.example.pagergallery.unit.util.LogUtil
 import com.example.pagergallery.unit.view.TopBar
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
@@ -36,6 +38,14 @@ class Repository private constructor(context: Context) {
             repository ?: synchronized(this) {
                 Repository(context).also { repository = it }
             }
+    }
+
+    private val _isActivityFirstLoad = MutableLiveData(true)
+    val isActivityFirstLoad get() = _isActivityFirstLoad
+    fun changeActivityLoadState(){
+        if (isActivityFirstLoad.value == true) {
+            _isActivityFirstLoad.value = false
+        }
     }
 
     //当前用户实例
@@ -148,23 +158,21 @@ class Repository private constructor(context: Context) {
         pagingSourceFactory = { PagingDataSource(this, queryStrLiveData.value) }
     ).flow
 
-    //重新加载
-    private val _reFresh = MutableStateFlow(false)
-    fun setReFresh(state: Boolean) {
-        _reFresh.value = state
-    }
-
-    val reFresh: StateFlow<Boolean> get() = _reFresh
-
 
     /**
-     * 获取与赋值图片列表
+     * 设置图片列表
      */
-    //获取图片列表
     private fun setGalleryListLiveData(list: List<Item>, type: String) {
         if (list.isEmpty()) {
             return
         }
+        LogUtil.d("isActivityFirstLoad=${isActivityFirstLoad.value},_galleryListLiveDate=${_galleryListLiveDate.value?.get(type)?.size}")
+        if (isActivityFirstLoad.value == true){
+            _galleryListLiveDate.postValue(mutableMapOf(type to list))
+            _isActivityFirstLoad.postValue(false)
+            return
+        }
+
         val isDefault = queryStrLiveData.value.isNullOrEmpty()
         if (galleryListLiveDate.value.isNullOrEmpty()) {
             if (isDefault)
